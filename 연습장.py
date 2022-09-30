@@ -79,8 +79,18 @@ import torch
 #     for j in range(2):
 #         print(b[i][j].data_ptr())
 
-a = torch.zeros(3,2)
-a = a.t()
-print(a.is_contiguous())
-# b = a.view(6)
-b = a.reshape(6)
+# a = torch.zeros(3,2)
+# a = a.t()
+# print(a.is_contiguous())
+# # b = a.view(6)
+# b = a.reshape(6)
+import torch
+import math
+torch.manual_seed(0)
+
+a = torch.randn( (), requires_grad=False)
+initial_address = a.data_ptr()
+a += 5  #in-place operation
+print(initial_address == a.data_ptr())
+a = a + 5 #out-of-place operation
+print(initial_address == a.data_ptr())
