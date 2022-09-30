@@ -8,6 +8,5 @@
 
 # Weekly Progress 
 
-1. Week1 - Python & AI Math (9.19 ~ 9.23) [[LINK]]()
-2. Week2 - Pytorch (9.26 ~ 9.30) [[LINK]]()
+1. Week2 - Pytorch (9.26 ~ 9.30) [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%202%20(9.26~9.30))
 

@@ -1,7 +1,10 @@
 # Week 2 : Pytorch
 
 ## Contents 
-- Pytorch의 기본과 관련된 3개의 질문을 스스로에게 해보고 답해보자.
+- Pytorch의 기본과 관련된 질문을 스스로에게 해보고 답해보자.
+    1. 나는 torch.Tensor.view와 torch.Tensor.reshape의 차이와 그런 차이가 갖는 의미를 설명할 수 있는가?
+    2. 나는 Dataloader함수의 각 parameter들의 역할을 제대로 설명할 수 있는가?
+    3. 왜 Pytorch에선 x = x + 1을 x += 1과 같은 형태로 쓰지 않을까? 
 - Pytorch Trouble shooting의 내용들을 정리하자.
 ---
 ## 1. 나는 torch.Tensor.view와 torch.Tensor.reshape의 차이와 그런 차이가 갖는 의미를 설명할 수 있는가?
@@ -206,7 +209,7 @@
 -  Memory Misalignment에 대해..
     - 학부 마이크로프로세서 과목과 컴퓨터 아키텍쳐를 수강하면서 memory misalignment라는 개념을 배운 적이 있다.
     - 메모리의 Contiguous한 사용과 직접적인 관련이 있는 내용이다. 정리하자면 CPU와 메모리(ex: cache)간 data를 교환 할때 bus width(32bit)크기 만큼의 data를 주고 받는데, 이 때 요구되는 data 크기와 주소에 상관 없이 메모리 주소를 4(8bit x 4)씩 건너뛰어가며 data를 가져온다는 것이다. 
-    -  예를 들어, 메모리 주소 01에 있는 8bit 데이터만 필요해도 00~03의 주소에 접근하여 32bit를 가져오게 되며, 03~04에 있는 16bit데이터가 필요하다면 03을 가져오기 위해 00~03 32bit를, 04를 가져오기 위해 04~07 32bit를 가져오게 된다는 것이다. 만약 이 16bit data가 00~03사이에 저장되어 있었다면 한 번의 cycle만으로 다 들고 올 수 있었던 것을 두 번의 access time으로 들고 오게 되는 셈이다.
+    -  예를 들어, 메모리 주소 01에 있는 8bit 데이터만 필요해도 00-03의 주소에 접근하여 32bit를 가져오게 되며, 03-04에 있는 16bit데이터가 필요하다면 03을 가져오기 위해 00-03 32bit를, 04를 가져오기 위해 04-07 32bit를 가져오게 된다는 것이다. 만약 이 16bit data가 00-03사이에 저장되어 있었다면 한 번의 cycle만으로 다 들고 올 수 있었던 것을 두 번의 access time으로 들고 오게 되는 셈이다.
     - 따라서, misalignment된 data들은 불필요한 data transfer cycle을 늘려 access time을 증가시키게 된다. 결국 memory에 data를 저장할때 bus크기와 data의 크기에 맞게 align하는 것이 중요하다. 
 
 > 딥러닝의 학습과정에서 tensor의 contiguous한 성질을 어떤 영향을 줄까?
@@ -234,7 +237,7 @@
     - Spatial Locality :  메모리 상 특정 주소의 data를 access할 때, 근처(즉, 연결된 이후 주소에 담긴 data)를 미래에 사용할 확률이 높다는 성질
     - Temporal Locality : 메모리의 특정 주소의 data를 반복해서 미래에 사용할 확률이 높다는 성질
 - 이런 성질을 고려하여, cpu에서 메모리에 접근하는 access time을 줄이고자 cache memory라는 작은 memory를 cpu와 매우 가까운 곳에 놓고, 여기에 자주 쓰이는 data들을 옮겨놓는다. 이러면 cache memory 까지만 data를 찾으러 감으로써 access time을 줄일 수 있다. Cahce에 미리 data가 올라가 있어서 그대로 쓰는 경우를 cache hit 라고 하고, 없어서 main memory까지 찾으러 가야하는 경우 cache miss라고 한다.
-- *Ex:* CPU는 cache memory로 data(미래에 사용할 확률이 높다고 생각되는)를 미리 옮길 때, spatial locality를 고려한다. 즉, 00 번의 8bit data만 필요하더라도 연결된 주소의 01~03까지의 data를 미래에 사용할 것이라고 생각(spatial locality)하고 00~03까지의 32bit data를 한번에 가져와 cache에 올려놓는다. 
+- *Ex:* CPU는 cache memory로 data(미래에 사용할 확률이 높다고 생각되는)를 미리 옮길 때, spatial locality를 고려한다. 즉, 00 번의 8bit data만 필요하더라도 연결된 주소의 01-03까지의 data를 미래에 사용할 것이라고 생각(spatial locality)하고 00-03까지의 32bit data를 한번에 가져와 cache에 올려놓는다. 
     > Matrix multiplication A@B에서 A의 행과 B의 열이 곱해지는 방식을 생각해봤을때, B의 열 vector가 반복적으로 쓰이는 것을 알 수 있다. 
 
     - **즉!! B의 열 vector가 메모리 상에서 contiguous하게 저장되어 있어야 cache로 이를 옮길 때 access time이 줄어들고 향후 행렬 연산에 유리하다는 것이다.**
@@ -257,6 +260,7 @@
 - 그러나, 내가 이 교육까지 들으면서 이걸 안 챙기면 앞으로 언제 챙길까?? 지금이라도..
 - sampler, pin_memory, num_workers에 대해 알아보자.
     ![data](./images/dataset_and_loader.png)
+
     ``` python
     # DataLoader의 기본 구성 요소
     # torch.utils.data.DataLoader
