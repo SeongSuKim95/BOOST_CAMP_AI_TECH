@@ -84,13 +84,13 @@ import torch
 # print(a.is_contiguous())
 # # b = a.view(6)
 # b = a.reshape(6)
-import torch
-import math
-torch.manual_seed(0)
+# import torch
+# import math
+# torch.manual_seed(0)
 
-a = torch.randn( (), requires_grad=False)
-initial_address = a.data_ptr()
-a += 5  #in-place operation
-print(initial_address == a.data_ptr())
-a = a + 5 #out-of-place operation
-print(initial_address == a.data_ptr())
+# a = torch.randn( (), requires_grad=False)
+# initial_address = a.data_ptr()
+# a += 5  #in-place operation
+# print(initial_address == a.data_ptr())
+# a = a + 5 #out-of-place operation
+# print(initial_address == a.data_ptr())

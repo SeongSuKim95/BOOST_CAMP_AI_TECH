@@ -259,7 +259,8 @@
 - 강의나 조교들의 말을 들어보면 몰라도 크게 상관 없다고, 앞으로 만날 일 없을거라고 하는데 실제로 나 또한 이 parameter들의 설정 값 때문에 고생했던 경험은 없다.
 - 그러나, 내가 이 교육까지 들으면서 이걸 안 챙기면 앞으로 언제 챙길까?? 지금이라도..
 - sampler, pin_memory, num_workers에 대해 알아보자.
-    ![data](./images/dataset_and_loader.png)
+    
+    <p align="center"><img src ="./images/dataset_and_loader.png"></p>
 
     ``` python
     # DataLoader의 기본 구성 요소
@@ -398,15 +399,30 @@
 3. pin_memory
     > Pinned memory는 GPU에서 호스트에서 디바이스로 전송을 위한 staging area이고 pinned data transfer는 pinned memory와 pageable memory의 전송 비용을 줄이기 위해 데이터를 pin memory에 고정시켜 전송하는 방법이다.우리가 pin_memory = True로 하게된다면 입력 데이터를 바로 pinned memory에 로드하여 빠르게 데이터 복사를 해 CUDA 연산을 효율적으로 할 수 있게 해준다. 따라서 시스템 메모리가 넉넉하다면 pin_memory = True로 하고 학습을 수행한다면 병목을 개선시킬 수 있다.
     - pin_memory는 나에게 익숙한 단어이다. 대학원 1학년 때 Open_CL programming을 배우면서 GPU가 pin_memory를 사용하도록 직접 coding해본 경험이 있으니..
-    - pin_memory는 gpu전용 cache memory라고 보면 된다. Data를 cache memory에 올려 놓고, 각 kernel들이 cpu로부터 데이터를 받지 않고 pin memory에서 data를 바로 참조할수 있도록 함으로써 속도를 높일수 있다.  
-    
+    - CUDA 기반의 GPU Memory를 이해하기 ~! [[LINK]](https://blog.naver.com/julie_eun1014/221116312880)
+        <p align="center"><img src= "./images/CUDA-memory-model.gif"></p>
+
+        1. On-chip
+            - GPU 칩안에 있는 메모리로 Register memory/ Local memory라고 불린다. (OpenCL에서도 같은 이름이었던거로 기억한다.)
+            - 레지스터는 GPU 커널 안에 선언되는 변수로, GPU 칩안에 있기 때문에 접근속도가 빠르다.
+            - 속도가 빠른 대신 비용 등의 이유로 memory size가 비교적 작다.
+        2. Off chip
+            - 그래픽 카드에 장착된 DRAM으로, 이를 Global/ Device memory 라고 불린다.
+            - GPU 포인터 선언 -> cudaMalloc 명령으로 메모리 할당해주기 -> 메모리 해제(cudaFree) 를 통해 메모리를 할당하고 해제한다.
+        3. Shared memory
+            - Global memory에 access하는 시간이 오래걸리기 때문에, CPU의 cache처럼 사용되는 메모리
+            - GPU block내 모든 thread가 공유하는 shared memory이며, 블록마다 자신의 shared memory를 가진다.
+        4. Pinned Memory & Pageable Memory
+            - 계산에 필요한 입력 데이터는 GPU가 아닌 CPU 메모리 영역에 있기 때문에 PCI-e 인터페이스를 통해서 GPU로 전송된다.
+            - 이 때, cudaHostAlloc 함수를 사용하면 **GPU와 통신하기 위한 CPU의 메모리 공간이 강제로 할당되어서 데이터 통신을 할 때 속도가 향상된다.**
+            - 이 기법을 memory pinning 이라고 하며, 이 때 사용하는 메모리로 pinned 메모리와 pageable 메모리가 있는데 속도 향상은 pinned memory가 더 뛰어나다.
+
 ## 3. 왜 Pytorch에선 x = x + 1을 x += 1과 같은 형태로 쓰지 않을까? 
 
 - 이 질문은, 과제 내용 중 nn.identity()를 소개하는 부분의 참고 자료에 Residual connection에 대한 내용이 나오길래 읽다보니 문득 든 궁금증이다.
 - 생각해보니, python 문법에서 x = x+1 과 x += 1은 동치인데 내가 지금까지 본 code들은 다 layer의 입출력 부분에 대해 x = x + 1 로 구현되어 있었다. 이유가 있을까?
 - 찾고 찾다 보니, Pytorch의 Autograd에 대한 이해가 수반되는 내용이었고, 좋은 공부 기회라고 생각하였다. 
 - [[LINK] Understanding the Error:- A leaf Variable that requires grad is being used in an in-place operation.](https://medium.com/@mrityu.jha/understanding-the-grad-of-autograd-fc8d266fd6cf)
-     >Step by Step 차근차근 알아봅시다.
     1. Leaf Tensor에 대해 
         >All Tensors that have requires_grad set to False will be leaf Tensors by convention. For Tensors that have requires_grad which is True, they will be leaf Tensors if they were created by the user(Eg. weights of your neural network). This means that they are not the result of an operation and so grad_fn is None.
         - Leaf tensor는 requires_grad = False 인 tensor 혹은, 사용자가 생성한 tensor 이면서 requires_grad = True인 tensor를 말한다. 즉, 연산의 결과로 나온 tensor가 아니어서 grad_fn이 None인 tensor이다. (requires_grad= False이면 당연히 grad_fn = None) 
@@ -429,9 +445,10 @@
         print(initial_address == a.data_ptr()) # False 새로운 메모리 공간에 할당
         ```
         - 여기서 tensor a 의 requires_grad를 True로 바꾸면 다음과 같은 error 가 뜬다.
-            >RuntimeError: a leaf Variable that requires grad is being used in an in-place operation.
+            > RuntimeError: a leaf Variable that requires grad is being used in an in-place operation.
         - 무슨 말이냐면, leaf tensor인 경우 requires grad = True여도 Pytorch에서 update를 허용하지 않는다는 것이다.
-        - 위 연산을 @torch.no_grad로 wrap-up하면 error 없이 실행시킬 수 있다.
+            > 이는 Pytorch developer간에 backward-pass 상의 in-place operation에 대한 합의가 안되어서 그런 것이라고 한다. 일단 이유는 생각보다 단순했다!!
+        - 위 연산은 @torch.no_grad로 wrap-up하면 error 없이 실행시킬 수 있다.
         - 과제 1의 코드 중 이런 코드가 있었는데.. 자세히 살펴보면, initialize 한 weight parameter(즉, 사용자가 생성한 parameter = leaf tensor)에 대한 처리를 해주는 부분이다. 여기선 gradient를 구하지 않지만, 왜 함수의 decorator로 붙어있는지 알 수 있는 대목이다.
             ```python
             import torch
@@ -447,12 +464,206 @@
             net = nn.Sequential(nn.Linear(2, 2), nn.Linear(2, 2))
             net.apply(init_weights)
             ```
-    4. Intermediate Tensor
-        - 사용자가 생성한 tensor가 아닌, Intermediate Tensor란 mathematical operation에 의해 생성된 tensor를 의미한다.
+    
+- 궁금증은 해결됐는데, tensor 연산시 a = a + anything 에서 error가 발생하는 경우도 존재한다고 한다! 
+    > 여기서부턴 Autograd에 대한 깊은 이해가 바탕이 되어야 한다. 다음 코드는 error가 발생하는 코드이다.
+
+    ```python
+    import torch
+    import math
+    torch.manual_seed(0)
+    dtype = torch.float
+    device = torch.device("cpu")
+    # device = torch.device("cuda:0")  # Uncomment this to run on GPU
+
+    # Create Tensors to hold input and outputs.
+    # By default, requires_grad=False, which indicates that we do not need to
+    # compute gradients with respect to these Tensors during the backward pass.
+    x = torch.linspace(-math.pi, math.pi, 2000, device=device, dtype=dtype)
+    y = torch.sin(x)
+
+    # Create random Tensors for weights. For a third order polynomial, we need
+    # 4 weights: y = a + b x + c x^2 + d x^3
+    # Setting requires_grad=True indicates that we want to compute gradients with
+    # respect to these Tensors during the backward pass.
+    a = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+    b = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+    c = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+    d = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+
+    learning_rate = 1e-6
+    for t in range(2000):
+        # Forward pass: compute predicted y using operations on Tensors.
+        y_pred = a + b * x + c * x ** 2 + d * x ** 3
+        loss = (y_pred - y).pow(2).sum()
+        if t % 100 == 99:
+            print(id(a))
+            print(t, loss.item())
+
+        loss.backward()
+
+        # Sol for Error 1
+        # a.retain_grad()
+        # b.retain_grad()
+        # c.retain_grad()
+        # d.retain_grad()
+
+        a = a - learning_rate * a.grad
+        b = b - learning_rate * b.grad
+        c = c - learning_rate * c.grad
+        d = d - learning_rate * d.grad
+        # Manually zero the gradients after updating weights
+        a.grad = None
+        b.grad = None
+        c.grad = None
+        d.grad = None
+
+    print(f'Result: y = {a.item()} + {b.item()} x + {c.item()} x^2 + {d.item()} x^3')
+    ```
+    > Error 1 : TypeError: unsupported operand type(s) for *: 'float' and 'NoneType'
+    
+    - Intermediate Tensor와 Autograd에 대해
+        - Intermediate Tensor란 사용자가 생성한 tensor가 아닌, mathematical operation에 의해 생성된 tensor를 의미한다.
             ``` python
             a = torch.randn(()) #YOU have created it, so its a leaf tensor
 
             b = a + 3 #it is a result of some mathematical operation, so its an intermediate tensor
             ```
-    - 여기서 부턴 Autograd에 대한 더 깊은 이해를 바탕으로 글을 작성하자..(09/30)
+        - Pytorch의 Autograd 시스템에선 Intermediate Tensor는 gradient를 grad Attribute에 accumulate 하지 않고 이를 더 상위 tensor의 computational graph로 passing시킨다.( 즉, 상위 intermediate tensor 의 grad_fn로 바로 보내버린다.)
+        - *즉, intermediate tensor의 grad_fn은 upper computational graph이고, grad는 None 이다. (Leaf tensor라면 grad_fn이 None이고 grad는 거슬러온 computational graph의 결과 값이다.)*
+        - a,b,c,d는 생성시에는 leaf tensor 였으나 y_pred를 구하는 과정 속에서 더이상 leaf tensor가 아니게 된다.
+        - *따라서 a.grad = None이 되어 a = a - learning_rate * a.grad에서 float(learning_rate)와 NoneType를 곱할 수 없다는 error가 발생하게 된다.*
+        - 만약, intermediate tensor라도 grad에 값을 저장할 수 있도록 각 parameter 에 retain_grad()를 설정해준다면 error를 해결 할 수 있다.
 
+- 좀 더 좋은 코드는 없을까?
+    - 앞서 설명한 in place operation을 torch.no_grad()와 함께 사용하는 것이 같은 동작을 하는 조금 더 효율적인 코드이다!
+    - 왜 일까? a -= learning_rate * a.grad 연산시 같은 메모리 공간을 쓰게되니까!!
+    ``` python
+    import torch
+    import math
+    torch.manual_seed(0)
+    dtype = torch.float
+    device = torch.device("cpu")
+
+    x = torch.linspace(-math.pi, math.pi, 2000, device=device, dtype=dtype)
+    y = torch.sin(x)
+
+
+    a = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+    b = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+    c = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+    d = torch.randn((), device=device, dtype=dtype, requires_grad=True)
+
+    learning_rate = 1e-6
+    for t in range(2000):
+        # Forward pass: compute predicted y using operations on Tensors.
+        y_pred = a + b * x + c * x ** 2 + d * x ** 3
+
+        # Compute and print loss using operations on Tensors.
+        # Now loss is a Tensor of shape (1,)
+        # loss.item() gets the scalar value held in the loss.
+        loss = (y_pred - y).pow(2).sum()
+        if t % 100 == 99:
+            print(t, loss.item())
+
+        loss.backward()
+
+        with torch.no_grad():
+            a -= learning_rate * a.grad
+            b -= learning_rate * b.grad
+            c -= learning_rate * c.grad
+            d -= learning_rate * d.grad
+
+            # Manually zero the gradients after updating weights
+            a.grad = None
+            b.grad = None
+            c.grad = None
+            d.grad = None
+
+    print(f'Result: y = {a.item()} + {b.item()} x + {c.item()} x^2 + {d.item()} x^3')
+    ```
+
+> 처음엔 왜 a = a + 1 의 형식을 자주 사용할까? 라는 질문으로 시작하였는데 Autograd에 대한 자세한 공부를 하게되었다. 질문에 대한 답은 생각보다 별 것 아니었는데 공부하다보니 Autograd에 대해 조금 더 deep하게 달려보고 싶다. 이걸 계기로 Autograd를 따로 정리해보고자 한다.
+---
+## Pytorch Trouble Shooting
+- 예전에, loss function을 새로 짜는 과정에서 OOM(out of memory) error가 발생했던 적이 있다.
+- 한참을 헤매다가, tensor의 indexing 오류에 의한 error였음을 알았을 때 얼마나 허탈했던지...
+- 이 참에 배운 것들이라도 정리해보는 시간을 가져보자.
+### Debugging에 유용한 code & Solution 들
+---
+1. GPUtil
+    ```python
+    !pip install GPUtill
+    import GPUtil
+    GPUtil.showUtilization()
+    # Nvidia-smi와 비슷한 역할을 하는 모듈
+    ```
+    - iter마다 GPU 메모리가 늘어나는지 확인하자.
+2. torch.cuda.empty_cache()
+    ```python
+    import torch
+    from GPUtil import showUtilization as gpu_usage
+
+    print("initial GPU Usage")
+    gpu_usage() # gpu와 memory 사용 상태 확인
+
+    tensorList = []
+    for x in range(10):
+        tensorList.append(torch.randn(10000000,1).cuda())
+    
+    print("GPU Usage after allocating a bunch of Tensors")
+    gpu_usage() # torch.randn로 tensor 생성 후 사용된 gpu memory 확인
+
+    del tensorList # 생성한 tensor를 지웠지만!
+
+    print("GPU Usage after deleting the Tensors")
+    gpu_usage() # 아직 gpu cache는 비워지지 않은 상태!
+
+    torch.cuda.empty_cache() # Cache 초기화
+    gpu_usage()
+
+    ```
+    - 사용되지 않는 GPU상 cache를 정리하고 가용 메모리를 확보
+     
+3. training loop에 tensor로 축적 되는 변수는 확인 할 것 !
+    ```python
+    total_loss = 0
+    for i in range(epoch):
+        optimizer.zero_grad()
+        output = model(input)
+        loss = criterion(output)
+        # Prob
+        loss.backward() 
+        optimizer.step()
+        total_loss += loss # loss의 computational graph 가 학습이 진행됨에 따라 계속 쌓여 메모리를 사용한다.
+        # Sol 
+        total_loss = loss.item() or total_loss = float(loss)
+    ```
+    - 1D tensor의 경우 python 기본 객체로 변환하여 처리한다!
+
+4. 가능한 batch 사이즈 실험해보기
+    ```python
+    oom = False
+    try:
+        run_model(batch_size)
+    except RuntimeError:
+        oom = True
+    
+    if oom :
+        for _ in range(batch_size):
+            run_model(1)
+    ```
+    - 학습시 OOM이 발생한다면 batch 사이즈를 1로 실험해보기
+
+5. Inference 시에는 torch.no_grad() 구문 사용
+
+6. Error : device-side assert triggered
+    - Loss function은 -1과 255값을 받지 못하기 때문에 발생
+    - Softmax 함수에 잘못된 dimension을 넘겨줄 경우에도 발생
+    - 간혹 학습 기법에 따라 일부러 틀린 라벨을 -1 등으로 지정해 넣어주는 경우가 있는데, 이 경우도 문제를 유발할 수 있습니다.
+    - 클래스의 인덱스 번호가 1부터 시작하는 경우 발생
+    - 데이터를 처리하는 과정에서 Numpy array와 FloatTensor 자료형이 충돌함으로 인해 에러가 발생할 수 있습니다. 이러한 상황은 보통 모델 아웃풋에 argmax를 씌워 최종 결과를 내는 과정에서 발생하며, Numpy ndarray를 torch.cuda.FloatTensor로 바꾸거나 반대로 torch.cuda.FloatTensor를 Numpy ndarray로 변환해 연산해 줍니다.
+
+7. Error : CUDNN_STATUS_NOT_INITIALIZED
+    - 딥러닝 환경설정을 하며 굉장히 자주 만나는 에러
+    - CUDA와 cuDNN의 호환성을 무시하고 설치해 버전이 꼬였거나, 관리자 계정에서 설치를 수행하지 않았거나, 올바르게 설치한 후 재부팅하지 않아 발생합니다.
