@@ -119,9 +119,9 @@
     - 당연해 보이지만 당연하지 않은 질문이다. 
     - 흔히 데이터 정규화를 설명할 때는, 데이터의 평균과 분산으로 표준화 하는 문제를 얘기하고 이것이 학습의 수렴 속도를 높인다는 것을 이유로 든다.
     - 그러나, 이 질문은 scaling에 관한 normalization이기 떄문에 약간 다를 수 있다고 생각 하여 찾아보게 되었다. [[LINK]](https://stackoverflow.com/questions/57454271/should-i-still-normalize-image-data-divide-by-255-before-using-per-image-stand)
-- **[0~255]를 [0~1]로 normalize하는 이유**ㄴ
-    1. numerical 한 value의 크기가 커서 발생하는 gradient exploding을 막을 수 있고, 학습의 수렴 속도를 높인다. ( 보통 activation function의 0~1 구간의 기울기가 크기 때문에 ex: tanh, sigmoid 등)
-    2. 0~1로 normalize한 후 model을 training할시 Transfer learning에 유용하다. 어떤 feature scale의 이미지 데이터에 대해서도 0~1에 대한 학습 값을 유지할 수 있기 때문에.
+- **[0-255]를 [0-1]로 normalize하는 이유**
+    1. numerical 한 value의 크기가 커서 발생하는 gradient exploding을 막을 수 있고, 학습의 수렴 속도를 높인다. ( 보통 activation function의 0-1 구간의 기울기가 크기 때문에 ex: tanh, sigmoid 등)
+    2. 0-1로 normalize한 후 model을 training할시 Transfer learning에 유용하다. 어떤 feature scale의 이미지 데이터에 대해서도 0-1에 대한 학습 값을 유지할 수 있기 때문에.
     3. Scaling을 하지 않을 경우 각 feature들이 loss function에 미치게 되는 영향력이 달라 지고, 이 때문에 특정 feature에 편향된 학습이 이루어질 수 있다.
 ---
 

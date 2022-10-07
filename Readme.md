@@ -10,3 +10,4 @@
 
 1. Week2 - Pytorch (9.26 ~ 9.30) [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%202%20(9.26~9.30))
 
+2. Week3 - DL Basic (10.3 ~ 10.7) [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%203%20(10.4~10.7))
