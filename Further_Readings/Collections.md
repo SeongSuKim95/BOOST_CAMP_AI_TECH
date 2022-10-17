@@ -23,4 +23,4 @@
 - Statically Vs Dynamically Typed Languages [[LINK]]()
 
 
- [[LINK]]()
+- [[LINK]]()
