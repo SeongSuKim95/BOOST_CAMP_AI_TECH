@@ -281,7 +281,7 @@
 
     - <p align="center"><img src = "https://user-images.githubusercontent.com/62092317/197113025-233c7e6d-bb0e-4416-9553-314debc7f219.png" width = 350></p>
 
-    - 고찰 사항ㅇㅇㅋㅋㅋ
+    - 고찰 사항
         1. Generator와 Discriminator의 loss를 관찰한 결과, Generator의 loss가 Discriminator의 loss보다 크기가 크고, 수렴성이 낮다.
             ``` python
             Train Epoch: [0/50]  Step: [3700/7500]G loss: 0.83967  D loss: 0.50499 

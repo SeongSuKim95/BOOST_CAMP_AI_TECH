@@ -18,17 +18,16 @@
 
 # Documents
 
-- Supplementaries [[LINK]]()
+- Supplementaries [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/Collections/Documents.md)
 
-- 참고 논문 정리 [[LINK]]()
+- 참고 논문 정리 [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/Collections/Papers.md)
 
-- Further questions 모음집 [[LINK]]()
+- Further questions 모음집 [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/Collections/Questions.md)
 
-- Camper들의 질의응답 모음집 [[LINK]]()
+- Camper들의 질의응답 모음집 [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/Collections/Q%26A%20with%20Campers.md)
 
 
 # Special Lecture
 
-- Git 특강 [[LINK]]()
+- Git 특강 [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/%ED%8A%B9%EA%B0%95/All%20about%20Git.md)
 
-# Proejects
