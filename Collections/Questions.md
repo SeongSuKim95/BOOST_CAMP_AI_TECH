@@ -34,7 +34,6 @@
     1. Regression Task와 Classification Task의 loss function이 다른 이유는 무엇인가요?
     2. Regression Task, Classification Task, Probabilistic Task의 Loss 함수(or 클래스)는 Pytorch에서 어떻게 구현이 되어있을까요?
 
-
 - Optimization
     1. Cross-Validation을 하기 위해서는 어떤 방법들이 존재할까요?
     2. Time series의 경우 일반적인 K-fold CV를 사용해도 될까요? [[LINK]](https://towardsdatascience.com/time-series-nested-cross-validation-76adba623eb9)
@@ -52,25 +51,37 @@
     2. Transformer 의 Query, Key, Value 는 각각 어떤 기능을 하나요? NMT 문제에서의 예시를 구체적으로 생각해보세요.
 
 
-# Week 4
+# Week 4,5
 
 ## Course -  CV
 
 - Object Detection
+
     1. Focal loss는 object detection에만 사용될 수 있을까요?
     2. CornerNet/CenterNet은 어떤 형식으로 네트워크가 구성되어 있을까요?
 
 - CNN Visualization
-
+    
     1. 왜 filter visualization에서 주로 첫번째 convolutional layer를 목표로할까요?
     2. Occlusion map에서 heatmap이 의미하는 바가 무엇인가요?
     3. Grad-CAM에서 linear combination의 결과를 ReLU layer를 거치는 이유가 무엇인가요?
 
-- Instance Panoptic Segmentation
-    
+- Instance Panoptic Segmenetation
+
     1. Mask R-CNN과 Faster R-CNN은 어떤 차이점이 있을까요? (ex. 풀고자 하는 task, 네트워크 구성 등)
     2. Panoptic segmentation과 instance segmentation은 어떤 차이점이 있을까요?
     3. Landmark localization은 human pose estimation 이외의 어떤 도메인에 적용될 수 있을까요?
+
+- Multi-modal
+
+    1. Multi-modal learning에서 feature 사이의 semantic을 유지하기 위해 어떤 학습 방법을 사용했나요?
+    2. Captioning task를 풀 때, attention이 어떻게 사용될 수 있었나요?
+    3. Sound source localization task를 풀 때, audio 정보는 어떻게 활용되었나요?
+
+- Recent Trends on Vision Transformer
+
+    1. ZeroCap에서 이미지에 적합한 caption을 생성하기위해, CLIP 정보를 어떻게 활용했나요?
+    2. Transformer의 어떤 특징이 Unified Model 구성을 용이하게했나요?
 
 ## 과제 2 - Training with Data Augmentation
 
@@ -95,9 +106,10 @@
 
     추가로 정확히 마스크의 영역을 잡아내고 있지는 않은데 이는 마스크 영역에 해당하는 픽셀별 ground truth가 주어지지 않았기 때문이며 또한 입력 이미지에 비해 16분의 1 사이즈의 feature map에서 픽셀별 예측을 진행하고 단순히 bilinear interpolation을 진행했기 때문입니다. 어떻게 하면 해당 segmentation network의 성능을 더 끌어올릴 수 있을지 고민해보세요 :)
   
-    <img src='https://drive.google.com/uc?id=1IFw0QT2zbr1txEQXaTBGuRGtgXBm8ruP'  width="224">
+    <p align="center"><img src='https://drive.google.com/uc?id=1IFw0QT2zbr1txEQXaTBGuRGtgXBm8ruP'  width="224"></p>
 
 - **want_to_check_heat_map_result** flag를 True로 설정하여 추가로 heatmap을 확인해보세요. 해당 과정을 통해 모델의 출력값을 그대로 시각화할 수 있습니다!
 
 - Segmentation이라고 했지만, 막상 heatmap에 가깝고 정확하게 Segmentation이 안되는 결과가 나온 것 같습니다. 좀 더 Segmentation 답게 만들기 위해서는 어떤 것들을 추가적으로 해야할지 고민해보시기 바랍니다.
+
 

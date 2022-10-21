@@ -11,3 +11,24 @@
 1. Week2 - Pytorch (9.26 ~ 9.30) [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%202%20(9.26~9.30))
 
 2. Week3 - DL Basic (10.3 ~ 10.7) [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%203%20(10.4~10.7))
+
+3. Week4 - Data viz, CV (10.10 ~ 10.14) [[LINK]]()
+
+4. Week5 - CV (10.17 ~ 10.21) [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%205%20(10.17~10.21))
+
+# Documents
+
+- Supplementaries [[LINK]]()
+
+- 참고 논문 정리 [[LINK]]()
+
+- Further questions 모음집 [[LINK]]()
+
+- Camper들의 질의응답 모음집 [[LINK]]()
+
+
+# Special Lecture
+
+- Git 특강 [[LINK]]()
+
+# Proejects

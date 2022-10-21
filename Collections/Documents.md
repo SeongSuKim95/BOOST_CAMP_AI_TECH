@@ -232,3 +232,9 @@
     - [Observable](https://observablehq.com/)
     - https://textvis.lnu.se/
     - https://visimages.github.io/
+
+# Week 4,5 
+
+## Conditional Generative Model
+- Generative Adversarial Networks [[LINK]](https://arxiv.org/pdf/1406.2661.pdf)
+- StyleGAN [[LINK]](https://arxiv.org/pdf/1812.04948.pdf)
