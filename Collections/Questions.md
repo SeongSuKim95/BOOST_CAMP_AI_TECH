@@ -50,25 +50,24 @@
     1. 앞서 소개한 RNN 기반의 모델들이 해결하기 힘든 문제들을 Transformer은 어떻게 다루나요?
     2. Transformer 의 Query, Key, Value 는 각각 어떤 기능을 하나요? NMT 문제에서의 예시를 구체적으로 생각해보세요.
 
-
 # Week 4,5
 
 ## Course -  CV
 
 - Object Detection
 
-    1. Focal loss는 object detection에만 사용될 수 있을까요?
-    2. CornerNet/CenterNet은 어떤 형식으로 네트워크가 구성되어 있을까요?
+    1. Focal loss는 object detection에만 사용될 수 있을까요? [[참고 자료: About Focal loss]](https://gaussian37.github.io/dl-concept-focal_loss/)
+    2. CornerNet/CenterNet은 어떤 형식으로 네트워크가 구성되어 있을까요? [[참고 자료: CenterNet]](https://deep-learning-study.tistory.com/622)
 
 - CNN Visualization
     
     1. 왜 filter visualization에서 주로 첫번째 convolutional layer를 목표로할까요?
     2. Occlusion map에서 heatmap이 의미하는 바가 무엇인가요?
-    3. Grad-CAM에서 linear combination의 결과를 ReLU layer를 거치는 이유가 무엇인가요?
+    3. Grad-CAM에서 linear combination의 결과를 ReLU layer를 거치는 이유가 무엇인가요? [[참고 자료: Medium]](https://medium.com/@ninads79shukla/gradcam-73a752d368be)
 
 - Instance Panoptic Segmenetation
 
-    1. Mask R-CNN과 Faster R-CNN은 어떤 차이점이 있을까요? (ex. 풀고자 하는 task, 네트워크 구성 등)
+    1. Mask R-CNN과 Faster R-CNN은 어떤 차이점이 있을까요? (ex. 풀고자 하는 task, 네트워크 구성 등) [[참고 자료1: About Mask R-CNN]](https://blahblahlab.tistory.com/139#:~:text=MASK%20RCNN%EC%9D%80%20%EA%B8%B0%EC%A1%B4%20object,%EB%8F%99%EC%8B%9C%EC%97%90%20%EC%B2%98%EB%A6%AC%ED%95%98%EB%8A%94%20%EB%AA%A8%EB%8D%B8%EC%9E%85%EB%8B%88%EB%8B%A4.) [[참고 자료2: About ROI align]](https://firiuza.medium.com/roi-pooling-vs-roi-align-65293ab741db)
     2. Panoptic segmentation과 instance segmentation은 어떤 차이점이 있을까요?
     3. Landmark localization은 human pose estimation 이외의 어떤 도메인에 적용될 수 있을까요?
 

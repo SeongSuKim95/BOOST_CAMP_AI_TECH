@@ -117,8 +117,36 @@
 ## Instance Panoptic Segmenetation
 
 >1. Mask R-CNN과 Faster R-CNN은 어떤 차이점이 있을까요? (ex. 풀고자 하는 task, 네트워크 구성 등)
+- Mask R-CNN은 기존 object detection task에서 사용되던 Faster R-CNN에 Mask branch를 추가한 구조로 **classification, bounding box regression, predictiing object mask를 동시에 처리하는 모델**
+- Mask branch는 작은 크기의 FCN으로 픽셀 wise로 K개의 class 각각에 대해 물체가 있는지 없는지를 판단하는 segmentation mask를 예측
+- 추가로, Faster RCNN의 ROI pooling 을 **ROI align layer**로 대체해 물체의 spatial location 즉, 위치정보를 보존
+- **Mask Branch의 역할과 ROI Align에 대하여** [[참고 LINK]](https://blahblahlab.tistory.com/139#:~:text=MASK%20RCNN%EC%9D%80%20%EA%B8%B0%EC%A1%B4%20object,%EB%8F%99%EC%8B%9C%EC%97%90%20%EC%B2%98%EB%A6%AC%ED%95%98%EB%8A%94%20%EB%AA%A8%EB%8D%B8%EC%9E%85%EB%8B%88%EB%8B%A4.)
+    - Mask Branch
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/197340309-671892e9-1c26-4800-8d6a-fe4d18c2cb20.PNG" width = 500></p>
+
+        - Mask branch에서는 각각의 ROI에 대해 각각의 클래스 k에 대한 binary mask를 생성 (Binary mask : 클래스 k에 대한 instance가 있다고 생각되면 1, 없으면 0으로 표현)
+        - 기존 모델들의 경우 mask와 class prediction을 동시에 수행, 즉 pixel 각각에 대해 모든 class에 대한 확률을 얻은 반면, mask branch에서는 mask와 class prediction이 분리된 셈이다. 이를 논문에서는 "decouple"이라고 표현했다.
+        - 하나의 픽셀에 대해 k(class 수)개의 output을 출력하므로, feature map M x M 에 대해 각각의 ROI는 $kM^2$개의 output을 출력하게 된다. 이렇게 생성된 mask는 object의 spatial한 정보를 담고 있다.
+    
+    - ROI Align
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/197341360-365c4a76-f5cf-4a43-a6b4-849a9bc854be.PNG" width = 300></p>
+        
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/197341362-2eaf03c4-0666-478a-b773-28bf07c406c2.PNG" width = 300>
+        
+        - 위 그림과 같이 ROI가 소수점 단위로 pixel의 좌표를 지정할 때, quantization(정수화,반올림)을 하면 정보의 손실과 동시에 불필요한 정보를 포함하게 된다.
+        - 이런 현상은 pixel 단위로 segmentation하여 mask를 예측하는 과정에서 안좋은 영향을 끼치게 된다.
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/197341896-b1fcc568-7227-4dc1-a46a-223a2f27ccfc.PNG" width = 500>
+
+        - 이러한 단점을 해결하기 위해 bilinear interpolation을 활용하여, ROI에 걸친 pixel의 수 만큼의 좌표, prediction 값을 딱 맞게 생성한다.[[참고 LINK]](https://firiuza.medium.com/roi-pooling-vs-roi-align-65293ab741db)
+        - **기존 방식이 image의 고정된 pixel 좌표에 맞추어 ROI를 제단한 것과 반대로, ROI에 맞추어 필요한 pixel(소수점)의 좌표를 격자 형식으로 할당한 후 보간법을 사용하여 해당 위치의 prediction 값을 구했다는 점에서 신선하다고 느꼈다.**
 
 >2. Panoptic segmentation과 instance segmentation은 어떤 차이점이 있을까요?
+- Semantic vs Instance vs panoptic segmentation [[참고 LINK]](https://pyimagesearch.com/2022/06/29/semantic-vs-instance-vs-panoptic-segmentation/)
+
+- 이 세 방식의 차이는 **things(셀 수 있는 class)** 와 **stuff(셀 수 없는 class)**를 어떻게 다루느냐에서 기인한다.
+    - Semantic segmentation은 객체의 class만을 구분할 뿐, 객체 각각을 구분하지는 않는다. 하늘이나 길과 같은 물체로 셀 수 없는 class도 분할하여 인식한다.
+    - Instance segmentation은 객체의 class뿐만 아니라, 객체 각각의 경계를 구분하여 물체가 겹친 경우에도 이를 구분하여 셀 수 있도록 인식한다. 그러나, semantic segmentation과 달리 하늘,도로 등 정해진 형태가 없는 물체의 경우엔 라벨을 부여하지 않는다. 
+    - **Panoptic segmentation은 두 방식을 결합한 방식으로 셀 수 있는 class(ex:차,사람)에 대해선 instance segmentation을 , 셀 수 없는 class(ex:하늘,도로)에 대해서는 semantic segmentation을 수행한다.**
 
 >3. Landmark localization은 human pose estimation 이외의 어떤 도메인에 적용될 수 있을까요?
 
