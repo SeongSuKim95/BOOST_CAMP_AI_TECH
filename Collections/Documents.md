@@ -37,7 +37,7 @@
 ### Python Object Oriented Programming
 - OOP를 빨리 잊을수록 여러분과 여러분의 소프트웨어에 좋습니다 [[LINK]](https://rinae.dev/posts/the-faster-you-unlearn-oop-the-better-for-you-and-your-software-kr#같은-데이터를-바라보는-여러-가지-방법이-있다)
 
-### Moudle & Project
+### Module & Project
 - Which Python Package Manager Should You Use? [[LINK]](https://www.youtube.com/watch?v=3J02sec99RM&feature=youtu.be)
 
 ### Python data handling
@@ -92,37 +92,38 @@
 - Pytorch Lightning [[LINK]](https://www.pytorchlightning.ai/)
 - Pytorch Lightning + NNI Boilerplate [[LINK]](https://github.com/davinnovation/pytorch-boilerplate)
 
-### Auto
+## Autograd
 
 - AutoGrad for Linear Regression [[LINK]](https://towardsdatascience.com/linear-regression-with-pytorch-eb6dedead817)
 - Pytorch로 Linear Regression하기 [[LINK]](https://towardsdatascience.com/linear-regression-with-pytorch-eb6dedead817)
 - Pytorch로 Logistic Regression하기 [[LINK]](https://medium.com/dair-ai/implementing-a-logistic-regression-model-from-scratch-with-pytorch-24ea062cd856)
 
-### PyTorch datasets & dataloaders
+## PyTorch datasets & dataloaders
+
 - Pytorch Dataset, Dataloader 튜토리얼 [[LINK]](https://pytorch.org/tutorials/beginner/basics/data_tutorial.html)
 
-### 모델 불러오기
+## 모델 불러오기
 
 - Computer Vision 모델 레포지토리 [[LINK]](https://github.com/rwightman/pytorch-image-models)
 - Segmentation 모델 레포지토리 [[LINK]](https://github.com/qubvel/segmentation_models.pytorch)
 
-### Distributed data parallel
+## Distributed data parallel
 
 - Pytorch Lightning Multi GPU 학습 [[LINK]](https://docs.pytorchlightning.kr/accelerators/gpu.html)
 - DDP 튜토리얼 [[LINK]](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
 
-### Hyperparameter Tuning
+## Hyperparameter Tuning
 
 - Pytorch와 Ray 같이 사용하기 [[LINK]](https://pytorch.org/tutorials/beginner/hyperparameter_tuning_tutorial.html)
 
-### Pytorch Trouble shooting
+## Pytorch Trouble shooting
 
 - PyTorch에서 자주 발생하는 에러 질문들 [[LINK]](https://pytorch.org/docs/stable/notes/faq.html)
 - OOM시에 GPU 메모리 flush하기 [[LINK]](https://discuss.pytorch.org/t/how-to-clean-gpu-memory-after-a-runtimeerror/28781)
 - GPU 에러 정리 [[LINK]](https://brstar96.github.io/devlog/shoveling/2020-01-03-device_error_summary/)
 
 ---
-### 과제 1
+## 과제 1
 ---
 - [What is the use of nn.Identity? - PyTorch Forum](https://discuss.pytorch.org/t/what-is-the-use-of-nn-identity/51781)
 - [What is the idea behind using nn.Identity for residual learning? - Stack Overflow](https://stackoverflow.com/questions/64229717/what-is-the-idea-behind-using-nn-identity-for-residual-learning)
@@ -135,7 +136,7 @@
 - [4 Types of Tree Traversal Algorithms - Towards Data Science](https://towardsdatascience.com/4-types-of-tree-traversal-algorithms-d56328450846)
 
 
-### Hook
+## Hook
 - [Invoking Time of nn.Module _register_state_dict_hook() - PyTorch Forum](https://discuss.pytorch.org/t/invoking-time-of-nn-module-register-state-dict-hook/108163)
 - [How to Use PyTorch Hooks - Medium](https://medium.com/the-dl/how-to-use-pytorch-hooks-5041d777f904)
 - [PyTorch 101, Part 5: Understanding Hooks - Paperspace blog](https://blog.paperspace.com/pytorch-hooks-gradient-clipping-debugging/)
@@ -143,27 +144,27 @@
 - [PyTorch 101, Part 5: Understanding Hooks - Paperspace blog](https://blog.paperspace.com/pytorch-hooks-gradient-clipping-debugging/)
 - [PyTorch Hooks Explained - In-depth Tutorial - YouTube](https://www.youtube.com/watch?v=syLFCVYua6Q)
 
-### Github Advanced Search
+## Github Advanced Search
 - [Github Advanced Search](https://github.com/search/advanced)
 
-### 모델 큐레이션 사이트
+## 모델 큐레이션 사이트
 - [Browse State-of-the-Art - Papers With Code](https://paperswithcode.com/sota)
 - [labml.ai Annotated PyTorch Paper Implementations - labml.ai](https://nn.labml.ai/)
 - [awesome-deeplearning-resources - endymecy](https://endymecy.github.io/awesome-deeplearning-resources/awesome_projects.html)
 
-### 오픈소스 라이센스 종류
+## 오픈소스 라이센스 종류
 - [Choosing the right license - Github Docs](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/licensing-a-repository#choosing-the-right-license)
 - [Choose an open source license - Choose AI License](https://choosealicense.com/)
 - [오픈소스를 사용하고 준비하는 개발자를 위한 가이드 - if(kakao) dev 2018](https://tv.kakao.com/channel/3150758/cliplink/391717603)
 - [Apache License 2.0 - OLIS](https://www.olis.or.kr/license/Detailselect.do?lId=1002&mapCode=010002)
 - [No License - Choose AI License](https://choosealicense.com/no-permission/)
 
-### Citation
+## Citation
 - [How to Cite a GitHub Repository - Wiki How](https://www.wikihow.com/Cite-a-GitHub-Repository)
 - [Free Harvard Citation Generator - Cite This For Me](https://www.citethisforme.com/citation-generator/harvard)
 ---
 
-### 과제 2
+## 과제 2
 ---
 - [Top 10 Performance Tuning Practices for Pytorch](https://medium.com/naver-shopping-dev/top-10-performance-tuning-practices-for-pytorch-e6c510152f76)
 
@@ -238,3 +239,10 @@
 ## Conditional Generative Model
 - Generative Adversarial Networks [[LINK]](https://arxiv.org/pdf/1406.2661.pdf)
 - StyleGAN [[LINK]](https://arxiv.org/pdf/1812.04948.pdf)
+
+# Week 6
+
+## Competition with AI Stages!
+- [AI stages](https://stages.ai/)
+- [Kaggle](https://www.kaggle.com/)
+- [Dacon](https://dacon.io/)
