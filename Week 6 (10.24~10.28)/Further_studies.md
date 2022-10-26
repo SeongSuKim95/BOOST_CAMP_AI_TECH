@@ -217,8 +217,42 @@
                 print("New best model for val accuracy! saving the model!")
                 torch.save(model.state_dict(),f"results/{name}/{epoch:03}_accuracy_{val_acc:4.2%}.ckpt")
                 best_val_acc = val_acc
-        
             ```  
 
             - Validation 결과를 보며, model을 저장하기 !
 
+
+## Ensemble
+
+- 보통의 Deep Neural Network에서는 Low Bias, High Variance로 인한 Overfitting 현상이 발생한다. 
+
+- Bagging, Boosting [[LINK]]()
+
+- Model Averaging(Voting)이 잘 동작하는 이유는 서로 다른 모델이 같은 test set에 대해 같은 error를 내는 경우는 잘 없기 때문
+
+- Cross Validation
+
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/197917788-ebb51405-4480-466a-9a94-4089b3909dc0.png" width = 600></p>
+
+    - validation set을 학습에 활용하여 validation set의 분포까지도 모델에 반영할 수는 없을까?
+    - Stratified K-Fold Cross Validation 
+        - 예를 들어 K=5일 경우,5개의 서로 다른 validation set(20%)을 만들고 각 model에 대해 fold를 적용하여 학습
+        - **Stratified** : fold를 split하는 과정에서 각각의 validation set과 train set내의 class 분포가 균일하도록 해야 한다.
+
+- TTA(Test Time Augmentation)
+
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/197918000-4e4a234d-0b08-4199-8254-b9f4d3777e41.png" width = 600></p>
+
+    - test sample에 여러 augmentation을 적용한 후, 각각에 대해 test를 수행
+    - 이렇게 수행한 결과들을 ensemble하여 test 성능을 도출할 경우, dataset에 overfit된 성능이 아닌 일반화된 test 성능을 얻을 수 있다. 
+
+- Hyperparameter Optimization
+    - Parameter를 변경할 때 마다 학습을 해야하므로, 시간/장비의 여유가 있어야 하므로 맨 마지막에 하는 것이 좋다.
+
+
+## Some Tips
+
+1. 분석 코드 보다는 설명글을 유심히 보며 필자의 생각을 읽자.
+2. 코드를 볼 때는 디테일한 부분까지.
+3. 최신 논문과 그 코드를 살펴보자.
+4. 공유하는 것을 주저하지 말자.
