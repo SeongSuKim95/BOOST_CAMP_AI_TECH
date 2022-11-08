@@ -16,6 +16,10 @@
 
 4. **Week5 - CV (10.17 ~ 10.21)** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%205%20(10.17~10.21))
 
+5. **Week6 - CV Competition 1th week** [[LINK]]()
+
+6. **Week7 - CV Competition 2nd week** [[LINK]]()
+
 # Documents
 
 - **Supplementaries** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/Collections/Documents.md)
