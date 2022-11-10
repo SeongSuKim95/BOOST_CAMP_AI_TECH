@@ -7,10 +7,32 @@
     - 나는 Vision Transformer과 CNN의 본질적인 동작 차이를 layer by layer로 설명할 수 있는가?
     - 나는 Generative model, GAN의 학습 방식을 수식으로 설명할 수 있는가?(TODO)
 
-2. QnA with camper : 캠퍼와 주고 받은 질문들에서 얻은 insight를 기록한다.
+2. Further Questions
+
+    - Neural Networks & Multi-layer Perceptron
+        - Regression Task와 Classification Task의 loss function이 다른 이유는 무엇인가요?
+        - Regression Task, Classification Task, Probabilistic Task의 Loss 함수(or 클래스)는 Pytorch에서 어떻게 구현이 되어있을까요?
+
+    - Optimization
+        - Cross-Validation을 하기 위해서는 어떤 방법들이 존재할까요?
+        - Time series의 경우 일반적인 K-fold CV를 사용해도 될까요? [[LINK]](https://towardsdatascience.com/time-series-nested-cross-validation-76adba623eb9)
+
+    - Modern Convolutional Neural Networks
+        - 수업에서 다룬 modern CNN network의 일부는, Pytorch 라이브러리 내에서 pre-trained 모델로 지원합니다. pytorch를 통해 어떻게 불러올 수 있을까요?
+
+    - Recurrent Neural Networks
+        - CNN 모델이 Sequantial 데이터를 처리하는 데에는 구체적으로 어떤 한계점이 있나요?
+        - LSTM 에서는 Modern CNN 내용에서 배웠던 중요한 개념이 적용되어 있습니다. 무엇일까요?
+        - RNN, LSTM, GRU 는 각각 어떤 문제를 해결할 때 강점을 가질까요?
+
+    - Transformer
+        - 앞서 소개한 RNN 기반의 모델들이 해결하기 힘든 문제들을 Transformer은 어떻게 다루나요?
+        - Transformer 의 Query, Key, Value 는 각각 어떤 기능을 하나요? NMT 문제에서의 예시를 구체적으로 생각해보세요.
+
+3. QnA with camper : 캠퍼와 주고 받은 질문들에서 얻은 insight를 기록한다.
     - 8bit 이미지 데이터를 왜 0~1로 normalize 하나요?
 
-3. Code review : Coding study channel과 peer session에서 review한 코드에 대해 복기한다.
+4. Code review : Coding study channel과 peer session에서 review한 코드에 대해 복기한다.
     - 스타트와 링크
     - 두 큐 합 같게 만들기
 
@@ -111,6 +133,27 @@
 ## 2. 나는 Generative model, GAN의 학습 방식을 수식으로 설명할 수 있는가?  
 > 여긴 다시 돌아오자. 10/16 이후..
 ---
+# Further Questions
+
+- Neural Networks & Multi-layer Perceptron
+    - Regression Task와 Classification Task의 loss function이 다른 이유는 무엇인가요?
+    - Regression Task, Classification Task, Probabilistic Task의 Loss 함수(or 클래스)는 Pytorch에서 어떻게 구현이 되어있을까요?
+
+- Optimization
+    - Cross-Validation을 하기 위해서는 어떤 방법들이 존재할까요?
+    - Time series의 경우 일반적인 K-fold CV를 사용해도 될까요? [[LINK]](https://towardsdatascience.com/time-series-nested-cross-validation-76adba623eb9)
+
+- Modern Convolutional Neural Networks
+    - 수업에서 다룬 modern CNN network의 일부는, Pytorch 라이브러리 내에서 pre-trained 모델로 지원합니다. pytorch를 통해 어떻게 불러올 수 있을까요?
+
+- Recurrent Neural Networks
+    - CNN 모델이 Sequantial 데이터를 처리하는 데에는 구체적으로 어떤 한계점이 있나요?
+    - LSTM 에서는 Modern CNN 내용에서 배웠던 중요한 개념이 적용되어 있습니다. 무엇일까요?
+    - RNN, LSTM, GRU 는 각각 어떤 문제를 해결할 때 강점을 가질까요?
+
+- Transformer
+    - 앞서 소개한 RNN 기반의 모델들이 해결하기 힘든 문제들을 Transformer은 어떻게 다루나요?
+    - Transformer 의 Query, Key, Value 는 각각 어떤 기능을 하나요? NMT 문제에서의 예시를 구체적으로 생각해보세요.
 
 # QnA with camper
 

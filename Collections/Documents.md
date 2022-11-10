@@ -4,32 +4,32 @@
 ## Python
 
 ### Basic computer class for newbies
-- 컴퓨터에 A 드라이브는 왜 없을까?? - 저장 아이콘과 C드라이브의 유래 우리가 모르는 플로피 디스크 이야기 [[LINK]]()
-- WSL 2 사용 편의성을 위한 Windows Terminal 설치와 활용 [[LINK]]()
-- Windows 10에 WSL, Ubuntu 설치하기 [[LINK]]()
-- Cmder 설치 (cmd, improved command prompt, console emulator) [[LINK]]()
-- 구글 코랩 (Google Colab) 튜토리얼 강의와 꿀팁 [[LINK]]()
+- 컴퓨터에 A 드라이브는 왜 없을까?? - 저장 아이콘과 C드라이브의 유래 우리가 모르는 플로피 디스크 이야기 [[LINK]](https://www.youtube.com/watch?v=PSOHb2GC-rM)
+- WSL 2 사용 편의성을 위한 Windows Terminal 설치와 활용 [[LINK]](https://youtu.be/6Sxn_7m4za8)
+- Windows 10에 WSL, Ubuntu 설치하기 [[LINK]](https://www.youtube.com/watch?v=yBbAdeYgpU0)
+- Cmder 설치 (cmd, improved command prompt, console emulator) [[LINK]](https://www.youtube.com/watch?v=aaBBqeUA3Ao)
+- 구글 코랩 (Google Colab) 튜토리얼 강의와 꿀팁 [[LINK]]https://youtu.be/nQu9yycRaMI)
 
-### 왕초보를 위한 python
-- 왕초보를 위한 python [[LINK]]()
-- 파이썬 기초 입문 했다가 일찍 포기하는 사람들 [[LINK]]()
+### 파이썬 개요
+- 왕초보를 위한 python [[LINK]](https://wikidocs.net/43)
+- 파이썬 기초 입문 했다가 일찍 포기하는 사람들 [[LINK]](https://medium.com/@haeyun210/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%88-%EC%9E%85%EB%AC%B8-%ED%96%88%EB%8B%A4%EA%B0%80-%EC%9D%BC%EC%B0%8D-%ED%8F%AC%EA%B8%B0%ED%95%98%EB%8A%94-%EC%82%AC%EB%9E%8C%EB%93%A4-fbc904e3c1d0)
 
 ### 파이썬 코딩 환경
-- 비쥬얼 스튜디오 코드 필수 단축키 정리 (Visual Studio Code 꿀템🍯🐝) [[LINK]]()
-- 코딩 인생 꿀템 VSC 단축키 5분 정리해드림 [[LINK]]()
-- Vi (Vim) 시작하기 [[LINK]]()
-- 주피터 노트북 사용법과 단축키 jupyter notebook shortcut [[LINK]]()
+- 비쥬얼 스튜디오 코드 필수 단축키 정리 (Visual Studio Code 꿀템🍯🐝) [[LINK]](https://www.youtube.com/watch?v=EVxCdenPbFs)
+- 코딩 인생 꿀템 VSC 단축키 5분 정리해드림 [[LINK]](https://www.youtube.com/watch?v=Wn7j5dfbJF4)
+- Vi (Vim) 시작하기 [[LINK]](https://www.youtube.com/watch?v=GWo_MxMlJJ4)
+- 주피터 노트북 사용법과 단축키 jupyter notebook shortcut [[LINK]](https://www.youtube.com/watch?v=Q7XMSDpBb7g)
 
 ### Variables
-- Variables in Python [[LINK]]()
-- Memory Allocation and Management in Python [[LINK]]()
-- Statically Vs Dynamically Typed Languages [[LINK]]()
+- Variables in Python [[LINK]](https://realpython.com/python-variables/)
+- Memory Allocation and Management in Python [[LINK]](https://www.youtube.com/watch?v=arxWaw-E8QQ&feature=youtu.be)
+- Statically Vs Dynamically Typed Languages [[LINK]](https://www.youtube.com/watch?v=jlUZw8-6ljw)
 
 ### Function & Console IO
-- Python tricks: Writing user-friendly code with PEP-8 naming conventions [[LINK]]()
+- Python tricks: Writing user-friendly code with PEP-8 naming conventions [[LINK]](https://www.youtube.com/watch?v=Sm0wwmEwqpI)
 
 ### String & Advanced function concept
-- Call By Value & Call By Reference in C [[LINK]]()
+- Call By Value & Call By Reference in C [[LINK]](https://www.youtube.com/watch?v=HEiPxjVR8CU)
 
 ### Python Data Structure
 - CS50 2020 Lecture 5 Data Structures [[LINK]](https://www.youtube.com/watch?v=2T-A_GFuoTo&ab_channel=CS50)
@@ -234,11 +234,14 @@
     - https://textvis.lnu.se/
     - https://visimages.github.io/
 
+---
 # Week 4,5 
 
 ## Conditional Generative Model
 - Generative Adversarial Networks [[LINK]](https://arxiv.org/pdf/1406.2661.pdf)
 - StyleGAN [[LINK]](https://arxiv.org/pdf/1812.04948.pdf)
+
+---
 
 # Week 6
 
@@ -246,3 +249,26 @@
 - [AI stages](https://stages.ai/)
 - [Kaggle](https://www.kaggle.com/)
 - [Dacon](https://dacon.io/)
+
+---
+
+# Week 8 : AI 서비스 개발 기초
+
+## MLOps 개론
+
+- Hidden Technical Debt in Machine Learning Systems 논문 [[LINK]](https://proceedings.neurips.cc/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf)
+- How to Detect Model Drift in MLOps Monitoring[[LINK]](https://towardsdatascience.com/how-to-detect-model-drift-in-mlops-monitoring-7a039c22eaf9)
+- Productionizing Machine Learning: From Deployment to Drift Detection[[LINK]](https://databricks.com/blog/2019/09/18/productionizing-machine-learning-from-deployment-to-drift-detection.html)
+- Awesome production machine learning[[LINK]](https://github.com/EthicalML/awesome-production-machine-learning)
+- Awesome MLOps[[LINK]](https://github.com/visenger/awesome-mlops)
+- 구글 클라우드의 Practitioners Guide to MLOps[[LINK]](https://cloud.google.com/resources/mlops-whitepaper)
+- Superb AI의 실리콘밸리의 ML옵스[[LINK]](https://www.superb-ai.com/ko-ebooks/mlops-guide)
+
+## Model Serving
+
+- Rules of Machine Learning: Best Practices for ML Engineering [[LINK]](https://developers.google.com/machine-learning/guides/rules-of-ml)
+
+## Notebook base - Voila
+
+- Voila 공식 문서 [[LINK]](https://voila.readthedocs.io/en/stable/)
+- ipywidgets 공식 문서 [[LINK]](https://ipywidgets.readthedocs.io/en/latest/)

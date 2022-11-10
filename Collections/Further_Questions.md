@@ -111,4 +111,3 @@
 
 - Segmentation이라고 했지만, 막상 heatmap에 가깝고 정확하게 Segmentation이 안되는 결과가 나온 것 같습니다. 좀 더 Segmentation 답게 만들기 위해서는 어떤 것들을 추가적으로 해야할지 고민해보시기 바랍니다.
 
-
