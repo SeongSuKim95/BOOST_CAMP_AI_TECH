@@ -243,17 +243,161 @@
     
             <p align="center"><img src="https://user-images.githubusercontent.com/62092317/201092197-8758779b-dd8d-42b1-a1d5-669b26b11719.png" width = 300></p>
 
-            - > .....
+            - > .....?
             - > Incorrect, Male, under 30은 학습 당시 6번 label이었으며 validation acc : 94.05% 였는데, 못 맞추네..??
         
         3. Wear, Female, Over 60 test
 
             <p align="center"><img src="https://user-images.githubusercontent.com/62092317/201093305-23d91a14-a5a2-41a1-9d6f-97b24bc33c14.png" width = 300></p>
 
-            - > 피곤해보이는 우리 엄마..
+            - > 피곤해보이는 우리 엄마..(초상권 미안)
             - > Wear, Female, Over 60은 학습 당시 5번 label이었으며 validation acc : 60.59%였다. 역시나 못 맞춘다. 우리 엄마가 동안이긴 한데..
 
-        
+### (7강)Linux & Shell Command
+
+- Linux 사용하는 방법
+    1. VirtualBox에 Linux 설치, Docker로 설치
+    2. WSL 사용(윈도우)
+    3. Notebook에서 터미널 실행
+- 기초 용어
+    - Shell 이란?
+        - 사용자가 문자를 입력해 컴퓨터에 명령할 수 있도록 하는 프로그램
+    - 터미널/콘솔
+        - 쉘을 실행하기 위해 문자 입력을 받아 컴퓨터에 전달
+        - 프로그램의 출력을 화면에 작성
+    - sh
+        - 최초의 쉘
+    - bash
+        - Linux 표준 쉘
+    - zsh
+        - Mac 카탈리나 OS 기본 쉘 
+- Basic Shell command
+    - man : 쉘 커맨드의 메뉴얼 문서를 보고 싶은 경우
+    - mkdir : 경로 생성하기
+    - ls : List segment
+        - -a : .으로 시작하는 파일, 폴더를 포함해 전체 파일 출력
+        - -l : 퍼미션, 소유자, 만든 날짜, 용량까지 출력
+        - -h : 용량을 사람이 읽기 쉽도록 GB,MB등 표현 '-l'과 같이 사용
+    - pwd : Print Working Diectory 
+    - cd : Change Directory
+    - echo : Python 의 print처럼 터미널에 텍스트 출력
+    - vi : vim 편집기로 파일 생성
+        - i: INSERT 모드에서만 수정할 수 있음
+        - /문자 : 문자 탐색, 탐색한 후 n을 누르면 계속 탐색 실행
+        - ESC 누른후 :wq (저장하고 나가기, write and quit)
+    - bash : bash로 쉘 스크립트를 실행 (ex: bash vi-test.sh)
+    - sudo(substitue user do) : 관리자 권한으로 실행
+    - cp : 파일 또는 폴더 복사하기
+        - -r: 디렉토리안의 파일까지 전부 복사
+        - -f: 복사할때 강제로 실행
+    - mv : 파일 또는 폴더 이동하기(이름 바꿀때도 사용)
+    - cat : 특정 파일 내용 출력(concatenate)
+        - 여러 파일을 인자로 주면 합쳐서 출력 (ex : cat vi_test2.sh vi_test3.sh)
+    - clear : 터미널 창 청소
+    - history : 최근 입력한 쉘 커맨드 출력
+        - !숫자 입력시 그 커맨드를 다시 활용
+    - find : 파일 및 디렉토리 검색 (ex : find . -name "File")
+    - export : 환경 변수 설정
+        - 터미널이 꺼지면 사라지게 되므로, 매번 쉘을 실행할 때마다 환경변수를 저장하고 싶으면 .bashrc, .zshrc에 저장해야 한다.
+        - ex : vi ~/.bashrc 또는 vi ~/.zshrc , 즉시 적용 source ~/.bashrc 또는 source ~/.zshrc
+    - alias : 별칭으로 설정
+        - ex : alias ll2 = 'ls -l'
+        - ll2 입력시 ls -l으로 동작
+    - head, tail : 파일의 앞/뒤 n행 출력 
+        - ex: head -n 3 vi-test.sh
+    - sort : 행 단위 절렬
+        - -r : 정렬을 내림차순으로(default : 오름차순)
+        - -n : Numeric Sort
+        - ex : cat fruits.tx | sort
+    - uniq : 중복된 행이 연속으로 있는 경우 중복 제거
+        - -c : 중복 행의 개수 출력
+    - grep: 파일에 주어진 패턴 목록과 매칭되는 라인 검색
+        - grep 옵션 패턴 파일명
+    - cut : 파일에서 특정 필드 추출
+        - -f : 잘라낼 필드 지정
+        - -d : 필드를 구분하는 구분자
+        - ex : vi cut_file
+    - Redirection & Pipe 
+        - Redirection : 프로그램의 출력(stdout)을 다른 파일이나 스트림으로 전달
+            - ">" : 덮어쓰기(Overwrite)파일이 없으면 생성하고 저장
+            - ">>" : 맨 아래에 추가하기(Append)
+                ``` cmd
+                echo "hi" > vi-test3.sh
+                echo "hello" >> vi-test3.sh
+                ```
+        - Pipe : 프로그램의 출력(stdout)을 다른 프로그램의 입력으로 사용하고 싶은 경우
+            - A의 Output을 B의 input으로 사용
+            - ex: 현재 폴더에 있는 파일명 중 vi가 들어간 단어를 찾고 싶은 경우
+                - ls | grep "vi"
+        - 연습 문제
+            - P1. test.txt파일에 "Hi!!!!"를 입력(vi 사용금지)
+                 > echo 'Hi!!!!' > test.txt
+            - P2. test.txt파일 맨 아래에 "kkkk"를 입력(vi 사용금지)
+                > echo 'kkkk' >> test.txt
+            - P3. test.txt의 라인수를 구하기(힌트: wc -l 쓰면 라인 수 구할 수 있음)
+                > cat test.txt | wc -l
+    - ps : Process Status 현재 실행되고 있는 프로세스 출력하기 
+        - -e : 모든 프로세스
+        - -f : Full Format으로 자세히 보여줌
+    - curl : Client URL, Command Line기반의 data transfer command
+    - df : Disk Free, 현재 사용중인 디스크 용량 확인 
+    - scp : Secure Copy(Remote file copy program) SSH를 이용해 네트워크로 연결된 호스트 간 파일을 주고 받는 명령어
+        - ex : scp local_path user@ip:remote_directory
+    - nohup : 터미널 종료 후에도 계속 작업이 유지되도록 실행(백그라운드 실행)
+        - nohup으로 실행될 파일은 Permission이 755여야 함
+    - chmod : Change Mode 
+         - r:Read(읽기),4
+         - w:Write(쓰기),2
+         - x:eXecute(실행하기),1
+         - -:Denied
+         - User, Group, 그외 사람들에 대한 권한을 차례대로 rwx 숫자의 합으로 표현
+- **Special Mission : 카카오톡 그룹 채팅방에서 대화 내보내기로 csv로 저장 후, 쉘 커맨드 1줄로 카카오톡 대화방에서 2021년(또는 2022년)에 제일 메세지를 많이 보낸 TOP 3명 추출하기!**
+    - 참고 자료 :[[Linux 문자열 검색]](https://recipes4dev.tistory.com/157)
+    - 우리 팀의 카톡방 내용을 내보내기 해서 연습해보았다. 
+        ```
+        txt 파일 일부
+        Date,User,Message
+        2022-10-17 07:23:09,"김성수","ㅎㅇㅎㅇ~~"
+        2022-10-17 07:35:40,"AI이우택","ㅎㅎㅎㅇ"
+        2022-10-17 07:39:44,"AI강민수","이모티콘"
+        2022-10-17 07:44:56,"AI 조윤재","하이하이"
+        2022-10-17 08:00:17,"AI이성진","하이"
+        ...
+        ```
+    - Steps
+        1. 먼저 shell 정규식과 grep 을 이용하여 각 메세지를 말한 ID를 추출한다.
+            > grep -o "\".*\"" chat.txt
+            - ID가 "" 안에 들어가 있기 때문에, " "안의 문자열을 matching하여 찾았는데 메세지도 같은 패턴을 갖기 때문에 ID,message가 추출된다
+                ```
+                "김성수","ㅎㅇㅎㅇ~~"
+                "AI이우택","ㅎㅎㅎㅇ"
+                "AI강민수","이모티콘"
+                "AI 조윤재","하이하이"
+                "AI이성진","하이"
+                ```
+        2. Pipe로 넘겨주고 추출된 것을 넘겨주고, cut command를 이용하여 ","를 기준으로 뒤 메세지 부분을 잘라준다.
+            > grep -o "\".*\"" chat.txt | cut -f 1 -d ","
+        3. ID만 추출된 상태에서, sorting을 한 후 uniq command를 이용하여 연속되면서 중복된 행의 개수를 세어준다.(Sorting을 하면 같은 ID끼리 연속되어 등장하기 때문에, uniq -c 를 활용하면 각 ID의 등장 빈도를 셀 수 있다.)
+            > grep -o "\".*\"" chat.txt | cut -f 1 -d "," | sort | uniq -c
+            ```
+            출력 결과
+            139 "AI 조윤재"
+            175 "AI강민수"
+            21 "AI이성진"
+            49 "AI이우택"
+            320 "김성수"
+            ```
+        4. Pipe로 counting 값을 넘겨주고 sort -r 을 이용해 내림차순으로 정렬 후, 맨 위 3 줄 (top 3)만을 출력한다.
+            > grep -o "\".*\"" chat.txt | cut -f 1 -d "," | sort | uniq -c | sort -r| head -n 3
+            ``` 
+            출력 결과
+            320 "김성수"
+            175 "AI강민수"
+            139 "AI 조윤재"
+            ```
+        5. 카톡방에서 내가 말을 제일 많이 했다.
+    - shell command(특히, pipe)와 정규식의 합작이 텍스트 파일 처리에 이렇게 유용할 수 있는지 몰랐다.. 머리 싸매면서 했는데 신기하다.. 그리고 정규식 연습 좀 더 해야겠다..
+### (8강) Docker
 
 ## 논문 스터디 - About Diffusion model
 - 다른 조 멘토님께서 매주 논문 스터디를 한다고 하셔서 몰래 잠입해보았다.
