@@ -17,22 +17,11 @@
         - 실제로 회사에서 한 일이 아니더라도, 특정 회사에서 활용했다고 가정하거나 아예 크게 문제 정의해서 구체화해보기
         - 이 모델이 회사에서 활용되었다면 어떤 임팩트를 낼 수 있었을까? 고민해서 정리해보기!
         - 직접 일상의 문제라도 하나씩 정의하기
-    - (5강) Notebook 베이스 - Voila
-        - Jupyter Notebook으로 만든 마스크 분류 모델을 Voila로 띄워보기
-        - ipywidget 공식 문서 읽어보기
-        - 데이터 시각화 파트에서 배운 내용과 ipywidget을 사용해 인터랙티브한 대시보드 만들기
-    - (5강-실습)  프로토타이핑 - Notebook 베이스(Voila)
-    - (6강) 웹 서비스 형태 - Streamlit 
+    - (5강,6강) Notebook 베이스 - Voila ,웹 서비스 형태 - Streamlit 
     - (7강) Linux & Shell Command
     - (8강) Docker
     - (9강) MLflow
-
-- AI 현업자 특강
-    - (특강 1강) 이활석 - 서비스 향 AI 모델 개발하기
-    - (특강 2강) 문지형 - 내가 만든 AI 모델은 합법일까 불법일까?
-    - (특강 3강) 오혜연 - AI Ethics
-    - (특강 4강) 이준엽 - Full Stack ML Engineer
-    - (특강 5강) 박은정 - AI 시대의 커리어 빌딩
+- 논문 스터디 : Diffusion Model
 ---
 
 ## Course
@@ -79,9 +68,10 @@
     - Monitoring
     - AutoML
 
-- MLOps 관련된 자료, 논문 읽어보며 강의 내용 외에 어떤 부분이 있는지 파악해보기
-    - 난 Data Drift가 궁금해!
-- MLOps Component 중 내가 매력적으로 생각하는 TOP3을 정해보고 왜 그렇게 생각했는지 작성해보기
+- MLOps 관련된 자료, 논문 읽어보며 강의 내용 외에 어떤 부분이 있는지 파악해보기 (TODO)
+    
+- MLOps Component 중 내가 매력적으로 생각하는 TOP3을 정해보고 왜 그렇게 생각했는지 작성해보기 (TODO)
+    
 
 ### (3강) MLOPs Serving
 
@@ -124,9 +114,11 @@
         - 특정 주기에 대해 반복해서 학습을 하거나 예측을 하는 serving 방식
         - Ex: 추천시스템에서의 1일 전에 생성된 컨텐츠에 대한 추천 리스트 예측 (Spotify의 Discover Weekly)
 
-- Rules of Machine Learning: Best Practices for ML Engineering 문서 읽고 정리하기!
+- Rules of Machine Learning: Best Practices for ML Engineering 문서 읽고 정리하기!(TODO)
+    
 
-- Online Serving / Batch Serving 기업들의 Use Case 찾아서 정리하기 (어떤 방식으로 되어 있는지 지금은 이해가 되지 않아도 문서를 천천히 읽고 정리하기)
+- Online Serving / Batch Serving 기업들의 Use Case 찾아서 정리하기 (어떤 방식으로 되어 있는지 지금은 이해가 되지 않아도 문서를 천천히 읽고 정리하기)(TODO)
+    
 
 ### (4강)머신러닝 프로젝트 라이프 사이클
 
@@ -375,7 +367,7 @@
                 "AI 조윤재","하이하이"
                 "AI이성진","하이"
                 ```
-        2. Pipe로 넘겨주고 추출된 것을 넘겨주고, cut command를 이용하여 ","를 기준으로 뒤 메세지 부분을 잘라준다.
+        2. Pipe로 추출된 것을 넘겨주고, cut command를 이용하여 ","를 기준으로 뒤 메세지 부분을 잘라준다.
             > grep -o "\".*\"" chat.txt | cut -f 1 -d ","
         3. ID만 추출된 상태에서, sorting을 한 후 uniq command를 이용하여 연속되면서 중복된 행의 개수를 세어준다.(Sorting을 하면 같은 ID끼리 연속되어 등장하기 때문에, uniq -c 를 활용하면 각 ID의 등장 빈도를 셀 수 있다.)
             > grep -o "\".*\"" chat.txt | cut -f 1 -d "," | sort | uniq -c
@@ -399,6 +391,7 @@
     - shell command(특히, pipe)와 정규식의 합작이 텍스트 파일 처리에 이렇게 유용할 수 있는지 몰랐다.. 머리 싸매면서 했는데 신기하다.. 그리고 정규식 연습 좀 더 해야겠다..
 ### (8강) Docker
 
+### (9강) MLflow
 ## 논문 스터디 - About Diffusion model
 - 다른 조 멘토님께서 매주 논문 스터디를 한다고 하셔서 몰래 잠입해보았다.
 - Generative model의 3 요소 : expressiveness, inference time, resolution
