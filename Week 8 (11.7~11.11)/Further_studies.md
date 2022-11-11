@@ -116,10 +116,8 @@
 
 - Rules of Machine Learning: Best Practices for ML Engineering 문서 읽고 정리하기!(TODO)
     
-
 - Online Serving / Batch Serving 기업들의 Use Case 찾아서 정리하기 (어떤 방식으로 되어 있는지 지금은 이해가 되지 않아도 문서를 천천히 읽고 정리하기)(TODO)
     
-
 ### (4강)머신러닝 프로젝트 라이프 사이클
 
 1. 문제 정의
@@ -391,7 +389,92 @@
     - shell command(특히, pipe)와 정규식의 합작이 텍스트 파일 처리에 이렇게 유용할 수 있는지 몰랐다.. 머리 싸매면서 했는데 신기하다.. 그리고 정규식 연습 좀 더 해야겠다..
 ### (8강) Docker
 
+- 가상화란?
+    - 등장 배경
+        - 개발할 때, 서비스 운용에 사용하는 서버에 직접 들어가서 개발하지 않음
+        - Local 환경에서 개발, 완료되면 staging, Production 서버에 배포
+        - 그러나 개발을 진행한 Local 환경과 Production 서버 환경이 다르다면?
+            - 운영체제가 다르기 때문에 라이브러리, 파이썬 등의 설치가 다르게 진행되어야함
+            - 환경변수가 다를 수도 있다.
+            - 매번 각 서버에 대한 설정을 맞춰주는건 사실 상 불가능하다!
+            - 서버 환경까지도 모두 한번에 소프트웨어화 할 수 없을까? (마치,밀키트처럼)
+    - 가상화의 의미
+        - 특정 소프트웨어 환경을 만들고, Local, Production 서버에 그대로 사용
+        - Docker 등장 전 : 가상화 기술로 VM(Virtual Machine)을 사용
+            - VM은 호스트 머신이라고 하는 실제 물리적인 컴퓨터 위에, OS를 포함한 가상화 소프트웨어를 두는 방식
+            - Container : VM의 무거움을 크게 덜어주면서, 가상화를 좀 더 경량화된 프로세스의 개념으로 만든 기술
+- Container 기술을 쉽게 사용할 수 있도록 나온 도구가 바로 Docker다!
+
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/201269995-3509a5df-f37b-42b5-820d-7ff2b321c108.png" width=300></p>
+
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/201270071-423a2536-9536-4c18-8a07-e715c87dee2a.png" width=300></p>
+
+    - Container들을 실은 고래의 모습..
+    - Docker Image
+        - 컨테이너를 실행할 때 사용할 수 있는 "템플릿"
+        - Read Only
+    - Docker Container
+        - Docker Image를 활용해 실행된 인스턴스
+        - Write 가능
+- Docker로 할 수 있는 일
+    - 다른 사람이 만든 소프트웨어를 가져와서 바로 사용할 수 있음!
+        - ex: MySQL, Jupyter Notebook
+    - 다른 사람이 만든 소프트웨어를 "Docker Image"라고 생각하면 된다.
+        - OS, 설정을 포함한 실행 환경을 의미
+    - 따라서, 자신만의 이미지를 만들면 다른 사람에게 공유할 수 있다.
+
+- Docker 실습하며 배워보기 
+    - 기본 명령어
+        - docker pull "이미지 이름:태그": 다른 사람의 이미지를 container registry에서 땡겨오기
+        - docker images : 다운 받은 이미지 확인
+        - docker run "이미지 이름:태그" : 다운 받은 이미지 기반으로 Docker Container를 만들고 실행 (-d 백그라운드 모드 -p 포트 지정)
+            - 로컬 호스트 포트 : 컨테이너 포트 형태로, 로컬 포트 3306으로 접근 시 컨테이너 포트 3306으로 연결되도록 설정 (로컬 호스트: 우리의 컴퓨터, 컨테이너 : 컨테이너 이미지 내부)
+            - ex) docker run --name mysql-tutorial -e -d -p 3306:3306 mysql:8
+        - docker ps : 실행한 컨테이너 확인
+        - docker ps -a : 모든 컨테이너를 확인 / 작동을 멈춘 컨테이너도 확인할 수 있음
+        - docker exec -it " 컨테이너 이름(혹은ID)" /bin/bash 
+            - Compute Engine에서 SSH와 접속하는 것과 유사
+        - docker rm "컨테이너 이름(ID)" : 멈춘 컨테이너를 삭제
+        - Dockekhub에 공개된 모든 이미지를 다운 받을 수 있음
+    - Docker Image 만들기
+        - 파이썬 환경 및 어플리케이션 코드 작성
+        - Dockerfile 작성
+            - FROM으로 베이스 이미지를 지정
+            - COPY로 로컬 내 디렉토리 및 파일을 컨테이너 내부로 복사
+            - WORKDIR로 RUN, CMD등을 실행할 컨테이너 내 디렉토리 지정
+            - RUN으로 어플리케이션 실행에 필요한 여러 리눅스 명령어들을 실행
+            - CMD로 이미지 실행시 바로 실행할 명령어를 지정
+            - EXPOSE : 컨테이너 외부에 노출할 포트 지정
+            - ENTRYPOINT : 이미지를 컨테이너로 띄울 때 항상 실행하는 커맨드
+        - Docker build "Dockerfile이 위치한 경로" -t "이미지 이름:태그"으로 이미지 빌드
+        - docker run "이미지 이름:태그"로 빌드한 이미지를 실행
+    
 ### (9강) MLflow
+
+- ML flow가 해결하려고 했던 Pain point
+    1. 실험을 추적하기 어렵다
+    2. 코드를 재현하기 어렵다
+    3. 모델을 패키징하고 배포하는 방법이 어렵다
+    4. 모델을 관리하기 위한 중앙 저장소가 없다
+- ML flow의 핵심 기능
+    1. Experiment Management & Tracking
+        - 모델 생성일, 모델 성능, 모델 메타 정보를 모두 기록할 수 있음
+        - 여러 사람이 하나의 MLflow 서버 위에서 각자 자기 실험을 만들고 공유
+    2. Model Registry
+        - MLflow로 실행한 머신러닝 모델을 Model Registry(모델 저장소)에 등록할 수 있음
+        - 모델 저장소에 모델이 저장될 대마다 해당 모델에 버전이 자동으로 올라감
+    3. Model Serving   
+        - Model Registry에 등록한 모델을 REST API형태의 서버로 Serving할 수 있음
+- ML Component
+    1. MLflow Tracking
+        - 머신러닝 코드 실행, 로깅을 위한 API,UI
+    2. MLflow Project
+        - 머신러닝 프로젝트 코드를 패키징하기 위한 표준
+    3. MLflow Model
+        - 모델은 모델 파일과 코드로 저장
+    4. MLflow Registry
+        - MLflow Model의 전체 Lifecycle에서 사용할 수 있는 중앙 모델 저장소
+
 ## 논문 스터디 - About Diffusion model
 - 다른 조 멘토님께서 매주 논문 스터디를 한다고 하셔서 몰래 잠입해보았다.
 - Generative model의 3 요소 : expressiveness, inference time, resolution
