@@ -1,3 +1,4 @@
+> 정리 상태 : ~ Week8 (Last update : 11/13)
 
 # Week 1 : Python & AI Math
 
@@ -235,7 +236,10 @@
     - https://visimages.github.io/
 
 ---
-# Week 4,5 
+# Week 4,5 : Data Viz, CV
+
+## Computer Vision 이란
+
 
 ## Conditional Generative Model
 - Generative Adversarial Networks [[LINK]](https://arxiv.org/pdf/1406.2661.pdf)
@@ -243,14 +247,74 @@
 
 ---
 
-# Week 6
+# Week 6,7 : CV Competition
 
 ## Competition with AI Stages!
 - [AI stages](https://stages.ai/)
 - [Kaggle](https://www.kaggle.com/)
 - [Dacon](https://dacon.io/)
 
+## EDA
+- [Data Visualization KR 페이스북 그룹](https://www.facebook.com/groups/2542191496047967?group_view_referrer=search) : 한국 데이터 시각화 페이스북 그룹입니다. 각 분야의 시각화 전문가분들이 데이터 분석 및 시각화에 대한 최신 기술 및 다양한 방법들을 실시간으로 공유해주시기에 많은 공부가 될 것입니다.
+- [Aptos 대회 데이터 분석 커널](https://www.kaggle.com/ratthachat/aptos-eye-preprocessing-in-diabetic-retinopathy) : 캐글에는 딥러닝을 활용하는 코드들이 올라오지만, 시각화에 대해서도 상당히 깊이있는 코드가 공유됩니다. 이 커널은 APTOS 대회에서 가장 많은 추천을 받은 노트북으로 EDA에 대해 어떤 방법으로 하는지 확인해보세요.
+- [시각화 라이브러리 소개](https://mode.com/blog/python-data-visualization-libraries/) : matplotlib, seaborn, plotly와 같은 다양한 시각화 라이브러리가 파이썬에 존재합니다. 각각의 장단점을 확인해보고 사용하는 것도 중요하겠죠!
+- [쇼핑 데이터 EDA, Melanoma Classification EDA](https://www.kaggle.com/andradaolteanu/siim-melanoma-competition-eda-augmentations) : 다양한 분석 방법이 포함 되어 있는 자료입니다. 내용이 방대하니, 관심있는 부분을 정해서 한번 내 데이터에 적용해보는 것도 좋겠습니다.
+- [Bengali.AI 대회 전처리 시각화 커널](https://www.kaggle.com/haqishen/gridmask) : 이렇게 시각화를 할 수 있다는 것도 보여드리기 위해 준비하였어요! 이 노트북 또한 캐글 대회에서 제안된 코드인데요, Grid mask를 적용했을 때 어떤 식으로 결과가 나오는지 쉽게 확인할 수 있습니다.
 ---
+
+## Data Feeding
+
+- [Dataset, DataLoader Tutorials](https://pytorch.org/tutorials/beginner/data_loading_tutorial.html)
+- [Albumentation](https://albumentations.ai/)
+- [imgaug](https://github.com/aleju/imgaug)
+- [catalyst](https://github.com/catalyst-team/catalyst): 파이토치 위에서 다양한 기능을 제공하는 라이브러리인데, 기본 데이터셋 기능을 넘어서 balanced batch sampler와 같은 API를 제공하는 라이브러리에요. 섬세한 학습을 위해 이러한 라이브러리를 살펴보는 것도 도움이 될수 있을거에요.
+- [Repository for custom dataset codes](https://github.com/utkuozbulak/pytorch-custom-dataset-examples)
+
+## Model
+
+- Pytorch Module 공식 문서[[LINK]](https://pytorch.org/docs/stable/generated/torch.nn.Module.html)
+- Torchvisions Models[[LINK]](https://pytorch.org/vision/stable/models.html)
+- Facebook AI Research(FAIR) 연구원이자 파이토치 라이트닝 프로젝트 오너인 Falcon 이 작성한 파이토치 성능향상을 위한 7가지 팁 [[LINK]](https://towardsdatascience.com/7-tips-for-squeezing-maximum-performance-from-pytorch-ca4a40951259) [[번역본]](https://bbdata.tistory.com/9)
+- Tesla 자율주행 연구소 Lead 인 Karpathy 가 트위터에 작성한 Pytorch Common Mistakes 해설 [[LINK]](https://medium.com/missinglink-deep-learning-platform/most-common-neural-net-pytorch-mistakes-456560ada037#:~:text=most%20common%20neural%20net%20mistakes)
+- Pytorch 꿀 기능. Autograd의 official documentation 번역본
+    - [Autograd_tutorial](https://tutorials.pytorch.kr/beginner/blitz/autograd_tutorial.html)
+    - [FAQ](https://pytorch.org/docs/stable/notes/faq.html)
+    - [Modules](https://pytorch.org/docs/stable/notes/modules.html)
+
+## Training & Inference
+
+- Optimizer scheduler plot 분석 [[LINK]](https://www.kaggle.com/isbhargav/guide-to-pytorch-learning-rate-scheduling)
+- 학습에 진전이 없을 때, 일찍 끝내고 싶을때 등의 경우에 파이토치 프레임워크 위에서 사용할 수 있는 여러 라이브러리들의 코드를 참고하는 것도 좋아요. ([Ignite](https://pytorch.org/ignite/), [Catalyst](https://catalyst-team.github.io/catalyst/index.html))
+- 캐글에는 다양한 학습 및 추론에 대한 코드가 공유되고 있습니다. 그 코드들을 하나하나 따라가다보면 효율적이고 성능을 높일 수 있는 학습 방법을 발굴할 수도 있어요. 예시로 SE-ResNeXT를 이미지 분류 문제에 학습시키는 코드가 Bengali 대회에 공유되었어요. [[LINK]](https://www.kaggle.com/corochann/bengali-seresnext-training-with-pytorch)
+- Pretrained Model에 대해 최신 기술을 매우 빠르게 업로드하고 간단하게 사용할 수 있게 공유해주는 레포가 있어요. 이를 참고해서 최고의 모델을 통해 문제에 가장 적합한 모델을 학습해보세요.[[LINK]](https://github.com/rwightman/pytorch-image-models) 
+- 어떠한 loss 함수를 써야할지 고민이 되신다구요? [Label Smoothing](https://3months.tistory.com/465), [F1 Loss](https://gist.github.com/SuperShinyEyes/dcc68a08ff8b615442e3bc6a9b55a354) (F1 Score를 목표로 하는 손실함수)와 같이 다양한 손실함수를 찾아보실 수 있어요.
+
+## Ensemble
+
+- Optuna Github [[LINK]](https://github.com/optuna/optuna)
+- Hyperparameter Opt 포스팅 [[LINK]](https://blog.floydhub.com/guide-to-hyperparameters-search-for-deep-learning-models/) 
+- AutoML 관련 포스팅 [[LINK]](https://medium.com/daria-blog/automl-%EC%9D%B4%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%BC%EA%B9%8C-1af227af2075)
+
+- k-fold cross validation using dataloaders in pytorch [[LINK]](https://stackoverflow.com/questions/60883696/k-fold-cross-validation-using-dataloaders-in-pytorch)
+    - sklearn의 k-fold는 index로 데이터를 split 하므로, pytorch의 torch.utils.data.dataset.Subset()를 이용하여 train, valid set으로 분리해 DataLoader를 작성합니다. 
+
+- Pytorch My_TTA Function (easy to understand)[[LINK]](https://www.kaggle.com/luyujia/pytorch-my-tta-function-easy-to-understand)
+    - 직관적으로 이해하기 쉽게 Pytorch로 작성한 캐글 커널입니다. 해당 코드에서 transform 부분에 Augmentation 기법을 추가해주어 작성할 수 있습니다.
+
+- wandb 사용법 
+    - wandb official [[LINK]](https://docs.wandb.ai/integrations/pytorch)
+    - Post [[LINK]](https://greeksharifa.github.io/references/2020/06/10/wandb-usage/)
+
+- Model Validation, Ensemble(OOF, Stacking) [[LINK]](https://www.kaggle.com/kcs93023/kakr-4th-seminar-model-validation-ensemble)
+    - 캐글 코리아 4차 경진대회에서 공개된 Model, Validation, Ensemble 커널 공유드립니다. 
+    - 유튜브 강의 [[LINK]](https://www.youtube.com/watch?v=G6i4folb2jo)
+
+## ETC
+- Jupyter Notebook VS Python IDLE [[LINK]](https://www.geeksforgeeks.org/jupyter-notebook-vs-python-idle/)
+- Multi-label classification [[LINK]](https://towardsdatascience.com/journey-to-the-center-of-multi-label-classification-384c40229bff)
+- Multi sample dropout [[POST]](https://towardsdatascience.com/multi-sample-dropout-in-keras-ea8b8a9bfd83) [[PAPER]](https://arxiv.org/abs/1905.09788) [[Kaggle Article]](https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/100961)
+- Cutmix 공식 github [[LINK]](https://github.com/clovaai/CutMix-PyTorch)
+    - Cutmix example [[LINK]](https://www.kaggle.com/debanga/cutmix-in-python)
 
 # Week 8 : AI 서비스 개발 기초
 
