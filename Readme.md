@@ -16,7 +16,7 @@
 - Special Lecture 
     - 취업 특강
     - AI 현업자 특강
-    - All
+    - Github 특강
 - Attitude
     - 개발자로서 가져야할 태도, 철학, 가치관들을 정리
 
@@ -34,7 +34,7 @@
 
 6. **Week7 - CV Competition 2nd week** [[LINK]]()
 
-7. **Week8 - AI service [[LINK]]()
+7. **Week8 - AI service** [[LINK]]()
 # Collections 🍎
 
 - **Documents** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/Collections/Documents.md)
@@ -56,3 +56,4 @@
 # Attitude 🙏
 
 - **마음 챙기기** [[LINK]]()
+

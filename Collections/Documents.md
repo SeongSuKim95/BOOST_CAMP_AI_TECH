@@ -188,7 +188,7 @@
 - An Introduction to Variational Autoencoders(저자) [[LINK]](https://arxiv.org/abs/1906.02691)
 
 ---
-# Week 3 : Data viz
+# Week 4 : Data viz
 
 ## Seabon 소개
 - Journal - seaborn: statistical data visualization [[LINK]](https://joss.theoj.org/papers/10.21105/joss.03021)
@@ -236,14 +236,34 @@
     - https://visimages.github.io/
 
 ---
-# Week 4,5 : Data Viz, CV
+# Week 5 : CV
 
 ## Computer Vision 이란
+- VGGNet [[LINK]](https://arxiv.org/pdf/1409.1556.pdf)
 
+## Data Augmentation
+- CutMix [[LINK]](https://arxiv.org/abs/1905.04899)
+
+## Image Classification
+- ResNet [[LINK]](https://arxiv.org/pdf/1512.03385.pdf)
+
+## Semantic Segmentation
+
+- Checkerboard artifacts [[LINK]](https://distill.pub/2016/deconv-checkerboard/)
+- FCN [[LINK]](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Long_Fully_Convolutional_Networks_2015_CVPR_paper.pdf)
+- UNet [[LINK]](https://arxiv.org/pdf/1505.04597.pdf)
 
 ## Conditional Generative Model
 - Generative Adversarial Networks [[LINK]](https://arxiv.org/pdf/1406.2661.pdf)
 - StyleGAN [[LINK]](https://arxiv.org/pdf/1812.04948.pdf)
+
+## Image Captioning
+
+- Pytorch tutorial image captioning [[LINK]](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning)
+
+## 3D Understanding
+
+- Mesh R-CNN [[LINK]](https://arxiv.org/abs/1906.02739)
 
 ---
 
@@ -316,6 +336,7 @@
 - Cutmix 공식 github [[LINK]](https://github.com/clovaai/CutMix-PyTorch)
     - Cutmix example [[LINK]](https://www.kaggle.com/debanga/cutmix-in-python)
 
+---
 # Week 8 : AI 서비스 개발 기초
 
 ## MLOps 개론
