@@ -28,9 +28,11 @@
     3. Sound source localization task를 풀 때, audio 정보는 어떻게 활용되었나요?
 
 - Recent Trends on Vision Transformer
-
-    1. ZeroCap에서 이미지에 적합한 caption을 생성하기위해, CLIP 정보를 어떻게 활용했나요?
-    2. Transformer의 어떤 특징이 Unified Model 구성을 용이하게했나요?
+    1. Transformer 기본 구조
+    2. ViT applications
+    3. Questions
+        - ZeroCap에서 이미지에 적합한 caption을 생성하기위해, CLIP 정보를 어떻게 활용했나요?
+        - Transformer의 어떤 특징이 Unified Model 구성을 용이하게했나요?
 
 2. 과제 
     - 과제 4 : Conditional Generative Adverserial Network
@@ -150,20 +152,90 @@
 
 >3. Landmark localization은 human pose estimation 이외의 어떤 도메인에 적용될 수 있을까요?
 
+- Landmark localization이란 특정 물체에 대해 중요시되는 특징점(keypoint)들을 추정하는 task이다.
+    - Coordinate regression : 좌표를 추정, Inaccurate and biased
+    - Heatmap classification : 각 채널을 하나의 keypoint에 대한 확률맵으로 표현하여 추정, 성능은 개선되지만 계산량이 크다.
+- Pose estimation 뿐만 아니라, facial landmark detection와 같이 사람 얼굴 이미지로부터 중요한 특징점(ex: 눈,코,입)등의 위치를 추정하는 분야에도 사용될 수 있다.
+
 ## Multi-modal
 
 >1. Multi-modal learning에서 feature 사이의 semantic을 유지하기 위해 어떤 학습 방법을 사용했나요?
 
+- Joint embedding이란?
+    - Matching을 하기 위한 공통된 embedding vector를 학습하는 것 
+    - 각각의 unimodal model에서 나온 feature vecture를 같은 embedding space로 투영시켜, modal간 관계성을 학습하도록 유도
+    - ex: Image tagging
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/201482054-4232d52c-3e9a-4df6-bd76-da662cfd184d.png" width = 300 height=250></p>
+        
+        - visual feature와 text feature의 semantic 정보가 유지된채로 같은 embedding space에서 서로의 유사성에 따라 다르게 투영된다.
+        
 >2. Captioning task를 풀 때, attention이 어떻게 사용될 수 있었나요?
+
+- Image captioning as image-to-sentence (Show and tell)
+    - Input의 image를 표현할 때는 CNN, sentence를 출력할 때 RNN을 사용
+    - Soft attention을 활용하는 기법
+        1. CNN으로 부터 나온 feature map(channel map)으로 부터 attention이 필요한 부분(heat map 기반 spatial attention)을 판단하여 RNN에 전달
+        2. RNN은 전달 받은 attention 정보를 condition으로 사용하여 word feature와의 연관성을 파악하여 단어를 순서대로 출력 한다.
 
 >3. Sound source localization task를 풀 때, audio 정보는 어떻게 활용되었나요?
 
+<p align="center"><img src="https://user-images.githubusercontent.com/62092317/201482769-523b85a0-501b-4622-80c1-2853c8bb1cef.png"width = 400></p>
+
+- Video frame과 audio 정보 각각이 visual net과 Audio net에 통과 된 후, attention network에 전달 된다.
+- Spatial 정보를 담은 visual feature map 각 위치의 video feature vector와 audio feature간에 내적을 통해 attention을 구한다.(이미지 각 위치와 소리 정보와의 연관성)
+- 이를 통해 구해진 sound localization score와 visual spatial feature vector를 element wise로 곱하여 attended visual feature를 구하고, metric learning을 이용하여 전체 network를 학습 한다.
+
 ## Recent Trends on Vision Transformer
 
->1. ZeroCap에서 이미지에 적합한 caption을 생성하기위해, CLIP 정보를 어떻게 활용했나요?
+1. Transformer 기본 구조
+- Self-attention(Q,K,V)
+    
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/201505394-f672500c-921e-49b2-939f-7aa5d5c48916.png" width=400></p>
 
->2. Transformer의 어떤 특징이 Unified Model 구성을 용이하게했나요?
+    - 같은 Input vector에 대해 Query,Key,Value로 transformation 이후, Query와 Key간의 내적을 통해 관계성을 파악하고 attention score를 얻음
+    - Value와 attention score간 matrix multiplication을 통해 weighted summation으로 aggregation
+    - Multi-head attention: 여러 개의 attention head를 통해 input token사이의 다각도의 관계성을 고려
+- Positional encoding
+    - Self-attention이 order-invariant하기 때문에 token의 순서에 대한 정보를 embedding하여 각 token에 더해줌
+- Encoder & Decoder
+    - Encoder : MHA, FFN
+    - Decoder : Masked multi-head attention
 
+2. ViT application - DETR : End-to-End Object Detection with Transformers [[참고자료 Medium]](https://medium.com/visionwizard/detr-b677c7016a47)
+
+<p align="center"><img src="https://user-images.githubusercontent.com/62092317/201513073-d8793de2-d62d-4de7-abe4-1032f9ac496b.png" width=500></p>
+
+- Object detection 문제를 set prediction 문제로 치환
+- 기존 detection model들의 hand-designed components(ex:non-max suppression) 없이 detection 수행
+- CNN을 사용하여 feature를 추출
+- Encoder, Decoder 구조를 함께 사용
+    - Encoder
+        - CNN에서 나온 feature를 1x1 convolution으로 채널수를 조정한 후 transformer encoder에 넣는다.
+        - CNN feature를 바로 사용하지 않는 이유는, receptive field를 고려할 때 global한 특성을 담지 못하기 때문
+    - Decoder
+        - Object queries를 특정 위치에 대한 object 존재여부를 학습
+- Prediction heads
+    - N bounding boxes(N >> #actual objects in an image)를 예측
+    - No object(background class 개념과 유사)를 표현하기 위해 additional special class label을 사용
+- Prediction heads에서 나온 bounding box들 각각에 대해 ground truth bbox에 대한 bipartite matching을 하여 loss를 계산
+
+3. Questions
+    > ZeroCap에서 이미지에 적합한 caption을 생성하기위해, CLIP 정보를 어떻게 활용했나요?
+
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/201513643-476280a9-fdfc-462a-b6ec-d924ca8b1b6f.png" width=500></p>
+
+    - ZeroCap : zero-shot image-to-text generation for visual-semantic arithmetic
+        - Visual semantic model인 CLIP과 large language model인 GPT-2를 결합 하여 image captioning을 수행
+        - Encoder를 통과한 image feature와 단어의 context feature를 동시에 받아 두 정보가 얼마나 align 되는지를 판단
+            - $L_{clip}$ : Stimulates the model to generate sentences that describe the given image
+         
+    > Transformer의 어떤 특징이 Unified Model 구성을 용이하게했나요?
+
+    - Unified transformers이란?
+        - Single purpose를 가지고 특정 modality에 대해 하나의 task를 수행하는 것이 아니라, transformer의 flexibility를 이용하여 input,output representation을 handle함으로써 하나의 통합된 model로 다양한 task를 처리
+    - **Transformer는 modality에 상관 없이 Input을 tokenize하기만 한다면 그들간의 관계성을 고려하도록 네트워크를 학습하면 되므로, cross-modal간의 generalization이 가능한 unified model로 사용될 수 있다.**
+    - Tokenize를 통해 모델 구조의 변경 없이 다양한 input, output representation을
+    handle할 수 있다.
 # 과제 
 
 - **과제 4 : Conditional Generative Adverserial Network**
@@ -227,7 +299,7 @@
     ```
     - 한개의 linear layer로 학습시 50 Epoch 학습 결과
     - 
-    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/196613023-15f29fdc-91a4-48ed-9098-bfa6e58e4810.png" width = "350"></p>
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/196613023-15f29fdc-91a4-48ed-9098-bfa6e58e4810.png" width = "300"></p>
 
     - Linear layer를 하나만 사용할 경우, model의 representation power가 제한되다보니 생성되는 이미지가 정확하지 않아서, 원 논문의 구현을 참고하여 다시 실험해보았다.[[참고 LINK]](https://deep-learning-study.tistory.com/m/640)
 
@@ -307,7 +379,7 @@
         - Generator, Discriminator 둘 다 ReLU가 아닌 LeakyReLU를 사용하였다.
     - 논문의 구현 방식으로 50 epoch 학습한 결과, 더 정확한 이미지가 생성되었다.
 
-    - <p align="center"><img src = "https://user-images.githubusercontent.com/62092317/197113025-233c7e6d-bb0e-4416-9553-314debc7f219.png" width = 350></p>
+    - <p align="center"><img src = "https://user-images.githubusercontent.com/62092317/197113025-233c7e6d-bb0e-4416-9553-314debc7f219.png" width = 300></p>
 
     - 고찰 사항
         1. Generator와 Discriminator의 loss를 관찰한 결과, Generator의 loss가 Discriminator의 loss보다 크기가 크고, 수렴성이 낮다.
