@@ -2,22 +2,22 @@
 
 # Purpose of the repository 🌟
 
-- Weekly Progress 
+- **Weekly Progress**
     - 수업 내용을 듣고, 추가적으로 발생한 궁금증들을 해소하고 고찰한 내용을 적기
     - 당연히 안다고 생각 했던 기본적인 것들의 이유를 유심히 챙겨기
     - 각 주차 마다 들었던 느낌을 회고
-- Collections 
+- **Collections** 
     - Assignments : 심화 과제 내용들을 살펴 보고 새로 알게된 내용 기록
     - Documents : 수업, 과제에 실린 참고 자료의 Link 정리
     - Further Questions : 수업에서 제공하는 Further Questions 정리
         - 질문에 대한 나의 답은 Weekly progress에 기록 후 Link
     - Coding test : 하루에 한 문제씩 풀고 정리
     - Questions with Campers : 캠퍼들이 slack에 올린 질의 응답을 정리하고 기록
-- Special Lecture 
+- **Special Lecture** 
     - 취업 특강
     - AI 현업자 특강
     - Github 특강
-- Attitude
+- **Attitude**
     - 개발자로서 가져야할 태도, 철학, 가치관들을 정리
 
 # Weekly Progress 🍏
