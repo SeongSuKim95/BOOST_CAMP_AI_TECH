@@ -347,6 +347,21 @@
         - Cross mini-batch normalization
     - **이러한 방법들은 모든 dataset에 대해 일반화된 방법론들이 아니므로, 제시된 여러 방법들을 본인의 직관을 가지고 판단하여 적용하는 것이 중요**
 
+- CornerNet
+    - Anchorbox 의 단점
+        - Anchorbox의 수가 많다보니, positive sample이 적고 대부분이 negative sample(배경)이라 class imbalance가 심함
+        - 개수, 사이즈, 비율과 같은 hyper-parameter를 고려해야함
+    - CornerNet은 중심점 기반의 4개 점을 예측하는 것이 아닌, corner 두 개(top-left corners, bottom-right corners)만을 예측
+    - Hourglass : Global,local 정보를 모두 추출
+        - Encoder : convolution layer + maxpooling layer
+        - Decoder : Encdoer과정에서 스케일별로 추출한 feature를 조합
+    - Detecting corner
+        - 2개의 heatmap을 통해서 예측, 각 채널은 class에 해당하는 corner의 위치를 나타내는 binary mask
+    - Grouping corner
+        - Top-left코너와 bottom-right코너의 짝을 맞춰주는 과정
+        - Top-left코너와 bottom-right코너의 임베딩 벡터간 거리가 작으면 같은 물체의 bbox위에 있다고 판단
+    - CornerPooling
+        - 코너에는 특징적인 부분이 없으므로, 코너에 객체에 대한 정보를 집약시키기 위함
 
 ### 멘토링
 
