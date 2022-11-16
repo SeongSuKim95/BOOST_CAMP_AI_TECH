@@ -5,8 +5,10 @@
 - Course
     - (1강)Object Detection Overview
 
----
-
+- Further questions 
+    - 초기 YOLO는 왜 2개의 boundingbox를 예측했을까?
+    - EfficientNet의 objective 수식과 parameter들의 타당성에 대하여
+    - AuGNet에 대하여
 ## Course
 
 ### (1강) Object Detection Overview
@@ -184,6 +186,168 @@
         - FPN과 같이 하나의 feature map에서 RoI를 계산하는 경우  sub-optimal
         - PANet은 모든 feature map으로 부터 max pooling하였지만, pooling에 의한 정보 손실 발생
         - Soft RoI selection은 channel-wise 가중치를 계산 후 가중치를 사용
+
+### (5강) 1 stage Detectors
+
+- 2 Stage Detector는 Localization과 Classification을 나누어 수행하기 때문에 속도가 느리다!
+- 2 Stage VS 1 Stage Detector
+    <p align="center"><img src= "https://user-images.githubusercontent.com/62092317/202064275-418add2c-a1eb-485a-a741-918dfd5047f0.png"></p>
+- YOLO (You Look Only Once)
+    - Pipeline
+        1. 입력 이미지를 SxS 그리드 영역으로 나누기
+        2. 각 그리드 영역마다 B개의 Bounding box와 Confidence Score계산
+        3. 각 그리드 영역마다 C개의 class에 대한 해당 클래스일 확률 계산
+    - 단점
+        - 7x7 그리드 영역으로 나눠 Bounding box prediction 진행하므로 Grid보다 작은 크기의 물체는 검출 불가능
+        - Feature extractor의 마지막 feature만을 사용하므로 정확도 하락
+- SSD
+    - Extra Convolution layers에서 나온 feature map들 모두 detection 수행
+        - **6개의 서로 다른 scale의 feature map 사용**
+        - 큰 feature map (early stage feature map)에서는 작은 물체 탐지
+        - 작은 feature map(last stage feature map)에서는 큰 물체 탐지
+    - Fully connected layer 대신 convolution layer 사용하여 속도 향상
+    - **서로 다른 scale과 비율을 가진 미리 게산된 default anchor box 사용**
+
+- YOLO v2
+    - 정확도 향상(Better)
+        - Batch normalization 사용
+        - High resolution classifier
+        - Convolution with anchor boxes
+            - YOLO v1 grid cell의 첫 10개의 feature(2개의 bbox 정보)를 랜덤으로 초기화 후 학습 했던 것에서 SSD처럼 anchor box를 도입하는 것으로 변경
+            - 좌표 값을 그대로 예측하는 것 대신 anchor box로 부터의 offset을 예측하는 문제가 단순하고 학습하기 쉽다
+        - Fine-grained features
+            - Early feature map을 late feature map에 합쳐주는 pass through layer 도입
+            - Multi-scale training(다양한 사이즈의 input image 사용)
+    - 속도 향상(Faster)
+        - Backbone model을 Google net에서 Darknet-19로 변경
+        - 마지막 fc layer를 3x3 convolution layer로 대체 후 1x1 convolution layer 추가
+    - 더 많은 class를 예측(Stronger)
+        - Classification 데이터셋, detection 데이터셋을 함께 사용
+        - WordTree 구성(계층적인 트리)
+- YOLO v3
+    - Darknet-53 사용
+    - Multi-scale Feature maps
+        - 서로 다른 3개의 scale 사용
+        - Feature pyramid network 사용
+
+- RetinaNet
+    - 1 Stage detector Problems
+        - Region proposal 이 없는 1 stage detector는 이미지를 grid로 나누고 각 grid마다 bounding box를 무조건 예측
+        - 따라서, positive sample(객체 영역) < negative sample(배경 영역)에 의한 class imbalance가 심함
+        - Anchor Box 대부분이 Negative sample(background)
+    - Solution
+        - Focal loss 활용하여 one-stage detector의 단점을 해결
+
+### (6강) EfficientDet
+
+- Model scaling 등장 배경
+    - Layer를 너무 깊게 쌓으면 성능의 gain은 줄어들고, 속도와 연산량만 늘어난다. 어떻게 하면 모델의 layer **잘** 쌓을 수 있을까?
+        > 즉, 더 높은 정확도와 효율성을 가지면서 ConvNet의 크기를 키우는 방법(scale-up)은 없을까?
+    - Width Scaling
+        - **더 wide한 네트워크는 미세한 특징**을 잘 잡아내는 경향이 있고, 학습이 쉬움
+        - But, 극단적으로 넓지만 얕은 모델은 high-level 특징들을 잘 잡지 못함
+    - Depth Scaling
+        - 깊은 ConvNet은 더 풍부하고 복잡한 특징들을 잡아낼 수 있고, 새로운 task에 잘 일반화됨
+        - But, Gradient vanishing 문제가 존재
+- EfficientNet
+    - Objective
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202098342-9a253371-bba4-44d0-9b54-70af4ca8295b.png" width = 300></p>
+
+        - **제한된 모델의 메모리와 FLOPs 속에서 모델의 성능을 최대화하는 depth,width,resolution의 조합 찾기!**
+
+    - Observation
+        1. 네트워크의 폭,깊이,혹은 해상도를 키우면 정확도가 향상된다. 그러나 더 큰 모델에 대해서는 정확도 향상 정도가 감소한다.
+        2. 더 나은 정확도와 효율성을 위해서는 ConvNet 스케일링 과정에서 네트워크의 폭, 깊이, 해상도의 균형을 잘 맞춰주는 것이 중요하다.
+    - Compound Scaling Method
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202101456-6e34f738-9300-4829-89a6-489ef4eeef00.png" width = 200></p>
+
+        - depth, width, resolution에 대해 최적의 쎄타 값을 heuristic하게 search
+- EfficientDet
+    - **Motivation : Object Detection은 특히나 속도가 중요하다!!**
+
+    - How?
+        - Efficient multi-scale feature fusion
+            - 서로 다른 정보를 갖고 있는 feature map을 단순합 하는게 맞을까?
+            - cross-scale connections: 여러 resolution의 feature map을 가중 합
+        - Model scaling
+            - EfficientNet과 같은 compound scaling 방식을 제안
+
+### (7강) Advanced Object Detection 1
+
+- Cascade RCNN
+    - Motivation : Iou threshold를 어떻게 결정 해야하는가?
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202150434-7f8cf8e9-b0d7-4e0f-abf9-c293cef73b81.png" width = 400></p>
+
+        - Input IoU : Region Proposal Network 를 통해 나온 bbox와 gt간 IoU
+        - Output IoU : Prediction bbox와 gt간 IoU
+        - IoU threshold가 높을 수록, **높은 Input IoU에 대해서는 높은 localization 결과를 보여주고 낮은 Input IoU의 bbox에 대해서는 낮은 localization 결과를 보여준다.**
+        - 학습되는 IoU에 따라 대응 가능한 IoU 박스가 다름
+        - High quality detection을 수행하기 위해선 IoU threshold를  높여 학습할 필요가 있으나, 성능이 하락하는 문제가 존재
+        - ** 서로 다른 IoU threshold에 대해 순차적으로 모델을 학습 하자!**
+    - Faster RCNN과 다르게 IoU threshold가 다른 Classifier C1,C2,C3를 학습
+    - 여러 개의 RoI head 학습하여 head 별로 IoU threshold를 다르게 설정
+    - AP90 (high quality detection)에 대해 큰 성능 향상
+
+- Deformable Convolutional Networks(DCN)
+    - 일정한 패턴을 지닌 CNN은 **geometric transformations에 한계를 지님** 
+    - Deformable convolution 이란?
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202156710-41005fae-566a-4229-baed-9f35385e342c.png" width=300></p>
+
+        - **Grid 영역 내부에 대한 convolution 연산이 아닌, 각 영역에 대한 offset을 학습시켜 연산 위치를 유동적으로 변화**
+        - Object detection과 segmentation task에서 성능 향상
+
+- DETR(End to End Object Detection with Transformer)
+    - Transformer를 처음으로 object detection에 적용
+    - 기존의 object Detection의 hand-crafted post process 단계(non max supression)를 transformer를 이용해 없앰
+    - Architecture
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202166586-5968c6a4-830f-4f6c-8318-f8a6ee39e5f0.png" width=450></p>
+        
+        - CNN으로 추출한 image feature를 encoder-decoder 구조에 통과시켜 bbox를 predict
+        - N개의 output bbox(한 이미지에 존재하는 object 개수 보다 높게 설정)
+            - Groundtruth에서 부족한 object 개수 만큼 no object로 padding처리
+            - Groundtruth와 prediction이 일대일 매핑
+            - Unique한 N값을 얻으므로 post-processing 과정이 필요 없음
+
+### (8강) Advanced Object Detection 2
+
+- YOLOv4
+
+    - Contribution
+        - BOF(Bag of Freebies) : Inference 비용을 늘리지 않고 정확도 향상시키는 방법
+        - BOS(Bag of Specials) : Inference 비용을 조금 높이지만 정확도가 크게 향상하는 방법
+        - GPS 학습에 더 효율적이고 적합하도록 방법들을 변형
+    - Bag of Freebies
+        
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202174541-06390499-92c7-4af7-ac8c-c4b09045574d.png" width=450></p>
+
+    - Bag of Specials
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202174847-b6cd1950-01fd-4c89-8bf8-6bb95af33202.png" width=450></p>
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202175323-046e5e6f-77e6-4ba1-9684-0842bc4a91b1.png" width=450></p >
+
+        - Enhance receptive field
+            - SPP(Spatial Pyramid Pooling)
+        - Attention Module
+            - Squeeze and Excitation block 
+            - Convolutional Block Attention Module(CBAM)
+        - Feature Integration
+            - FPN, ASFF
+        - Activation function
+        - Post-processing method
+            - Soft NMS, DIoU NMS
+    - Architecture
+        - 기존에 사용되던 backbone인 DarkNet을 Cross Stage Partial Network(CSPNet)로 사용
+    - Additional Improvement
+        - Mosaic
+        - Self-Adversarial Training : 4장의 이미지를 하나로 합침
+        - Cross mini-batch normalization
+    - **이러한 방법들은 모든 dataset에 대해 일반화된 방법론들이 아니므로, 제시된 여러 방법들을 본인의 직관을 가지고 판단하여 적용하는 것이 중요**
+
+
 ### 멘토링
 
 - 멘토님의 질문 : Pretrained weight를 쓰는 것이 항상 좋을까요?
