@@ -3,12 +3,33 @@
 ## Contents 
 
 - Course
-    - (1강)Object Detection Overview
+    - (1강) Object Detection Overview
+    - (2강) 2 Stage Detectors
+    - (3강) Object Detection Library
+    - (4강) Neck
+    - (5강) 1 Stage Detectors
+    - (6강) EfficientDet
+    - (7강) Advanced Object Detection 1
+    - (8강) Advanced Object Detection 2
+    - (9강) Ready for Competition
 
 - Further questions 
+
     - 초기 YOLO는 왜 2개의 boundingbox를 예측했을까?
     - EfficientNet의 objective 수식과 parameter들의 타당성에 대하여
     - AuGNet에 대하여
+        - SE모델과의 연관성
+    - Convolution 구현 살펴보기
+        - Atrous Convolution
+        - Deformable Convolution
+
+- About mission
+    - FasterRCNN : RoI pooling을 통해 얻은 roi결과들과 gt bbox간 IoU를 구할때 , 왜 gt bbox를 positive sample로 간주할까?
+
+- Mentoring
+    - Pretrained weight를 사용하는 것이 항상 올바른 선택일까요?
+
+
 ## Course
 
 ### (1강) Object Detection Overview
@@ -362,6 +383,159 @@
         - Top-left코너와 bottom-right코너의 임베딩 벡터간 거리가 작으면 같은 물체의 bbox위에 있다고 판단
     - CornerPooling
         - 코너에는 특징적인 부분이 없으므로, 코너에 객체에 대한 정보를 집약시키기 위함
+
+- (9강) Ready for Competition!
+    - mAP에 대한 오해 
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202412203-e83eaa1d-3a09-44af-b382-cdbf4d034db9.png" width=300></p>
+
+        - 왼쪽은 bbox threshold를 높게 준 경우, 오른쪽은 bbox threshold를 낮게 준 경우
+        - 오른쪽의 경우 bbox가 무분별하게 많으나, mAP가 왼쪽보다 높다. 과연 오른쪽이 더 좋은 detection 결과라고 볼 수 있을까?
+            - AP는 bbox의 수에 대한 패널티를 부여하지 않는다. 
+            - Bounding box수를 늘려 recall을 1에 가깝게 만들 수록 AP는 기존 보다 높게 측정된다.
+            - 즉, 낮은 bbox threshold를 낮출수록 AP 측정 관점에서 유리하다.
+        - **추후 모델을 앙상블 하는 경우에 과도한 bounding box에 의한 문제가 발생할 수 있다.**
+        - 실제 연구에서는 대부분 0.05를 threshold로 mAP 평가
+
+    - Validation set 찾기
+        - Validation set의 스코어가 올랐을 때 Public과 Private score가 모두 상승하는지를 확인
+        - Stratified K-fold Validation
+            
+            <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202416797-a65a6af3-63eb-4573-99f5-6b4627f1d07d.png" width=400></p>
+
+            - 데이터의 분포가 imbalance한 상황에서 fold마다 유사한 데이터 분포를 갖도록 하는 방법
+    
+### Further Questions
+
+1. 초기 YOLO는 왜 2개의 boundingbox를 예측했을까?
+    - YOLOv1은 하나의 셀에 대해 1x30 의 vector를 predict한다. 30은 2개의 bounding box에 대한 정보(x,y,w,h,c) + 20개의 class에 대한 score이다. (7x7 grid에 대해 최종 예측 7x7x30)
+    - **그렇다면 왜 1개도 3개도 아닌 2개의 bbox를 예측했어야 했는지가 궁금해졌다. 어차피 여러개도 아닌 2개를 예측할 것이었다면, 나라면 1개를 예측하는 것부터 시작했을 것이다. 저자는 왜 이런 선택을 했을까?**
+        - 이에 대한 이유 또는 ablation study가 논문[[YOLOv1]](https://arxiv.org/abs/1506.02640)에 나와 있을줄 알았는데, 다음과 같은 문장말고는 근거를 찾을 수 없었다.
+
+            > For evaluating YOLO on PASCAL VOC, we use S = 7,
+            B = 2. PASCAL VOC has 20 labelled classes so C = 20.
+            Our final prediction is a 7 × 7 × 30 tensor.
+        - 구글링을 하다가 이와 관련된 3개의 글을 찾았다.
+            1.  [[YOLO정리글]](https://curt-park.github.io/2017-03-26/yolo/)
+                - 개념 정리도 정리지만, 댓글의 질문들을 보며 YOLO에 대한 이해를 높일 수 있다.
+                
+                    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202445416-e831ea65-9a23-47a7-91e2-d7cc05863c75.png" width=400></p>
+            2. [[Inflearn 질문: YOLO는 왜 2개의 bbox를 예측하나요]](https://www.inflearn.com/questions/551824)
+            
+            3. [[Towards data science: YOLO]](https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006)
+                - 이 글에서 어느정도는 궁금증을 해소 할 수 있었다.
+
+                    > YOLO predicts **multiple bounding boxes per grid cell.** At training time we only want one bounding box predictor to be responsible for each object. We assign one predictor to be “responsible” for predicting an object based on which prediction has the highest current IOU with the ground truth. **This leads to specialization between the bounding box predictors.** Each predictor gets better at predicting certain sizes, aspect ratios, or classes of object, improving overall recall.
+                    
+                    > **YOLO imposes strong spatial constraints on bounding box predictions since each grid cell only predicts two boxes and can only have one class. This spatial constraint limits the number of nearby objects that our model can predict.** Our model struggles with small objects that appear in groups, such as flocks of birds.
+
+                - 정리하자면, 기본적으로 YOLO는 한 cell내에 존재하는 다중 객체에 대한 detection을 수행할 수 있게 하기 위해 cell마다 1개의 bbox가 아닌 복수 개(2개)의 bbox를 예측한다. 학습 되는 과정 속에서 두개의 bbox중 하나만을 원하기 때문에 gt와 IoU가 가장 높은 bbox를 선택하게 되고 이것이 prediction 방식을 더 **구체화(specialize)** 시킨다는 것이다. **만약 bbox를 1개만 예측했다면, 단순히 비교군이 없기 때문에 IoU가 적당히 높은 수준에서 학습이 멈추고 size, aspect ratio에 대한 세밀한 detection을 하지 못하는 것이 아닐까?** 1 stage detector이기 때문에 이런 설정이 필요한 것으로 보인다.
+                - 그러나, 2개만을 예측하는 것(더 많이 예측하지 않는 것)을 YOLO의 limitation으로 보기도 한다. 그 이유는, cell 주변에 2개 이상의 작은 object가 있을 때 대응하지 못하기 때문이다.
+
+2. EfficientNet의 objective 수식의 타당성에 대하여
+
+    - EfficientNet의 objective는 너무 당연해 보인다. network의 성능을 maximize하는 depth, width, resolution을 구하는 것.. 너무 당연해 보이지 않는가? **그러나, 그걸 찾아나가는 방식을 당연시해서는 안된다고 생각한다.**
+
+    - 저자는 왜 **exponential equation**을 토대로 $\alpha$, $\beta$,$\gamma$ 을 찾으려고 했을까?
+        - 맨 처음 들었던 의문점이다. $d=\phi\alpha, w= \phi\beta, r = \phi\gamma$ 와 이 linear equation으로 search해도 되지 않았을까?
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202458891-ccc6c587-2698-4f00-905d-84e4302dbd1e.png" width = 400></p>
+
+
+        - 오른쪽은 논문에서 제시한 compound scaling method의 수식이고, 왼쪽은 $\phi$ 값에 따른 최적의 $\alpha$, $\beta$,$\gamma$ 값을 찾을 때 linear한 식과 exponential한 식의 차이를 나타낸 것이다.
+        - 지수함수의 경우 같은 $\phi$에 대해, 변수의 값이 linear하게 증가할때 수식의 값은 빠르게 증폭된다.
+        - 이러한 경향성이 **Layer가 쌓임에 따라 Deep Neural Network의 representation power가 증가하는 경향성**과 비슷하다는 가정을 한것이 아닐까? 또한, non-linearity가 보장되는 nerual network의 capacity가 linear하게 증가할 것이라는 가정은 non-sense처럼 보인다. 따라서 neural network의 표현력이 증가하는 경향성을 가장 간단하게 잘 표현할 수 있는 수단이 exponential이었을 것이라고 추측해본다.
+
+    - Constraint $\alpha \times \beta^2 \times \gamma^2 = 2$ 는 어떻게 정했을까?
+        - 위 그림에서 알 수 있듯이 저자는 small grid search를 통해 $\alpha,\beta,\gamma$ 값을 정했다고 한다.
+        - $\alpha \times \beta^2 \times \gamma = k $ 라고 가정해보자.
+        - 각 parameter $\alpha,\beta,\gamma$ 를 동일한 초기값에서 시작하여 searching한다고 할 때 그 값은 $\sqrt[3]{k}$ 일 것이다.
+        - k=2 일 경우 $\sqrt[3]{2}$의 값은 1.25992, 논문에서 사용한 $\alpha=1.2, \beta=1.1,\gamma=1.15$ 와 비교해볼때 small grid search로 찾기에 적합한 초기값임을 알 수 있다.
+        - 논문에서 $\phi$는 모델의 scaling된 정도를 model 이름의 B뒤에 붙여 naming하기 위해 사용된다. 예를 들어, EfficientNet-B0에서 $\phi=0$이다.
+        - B0~7까지 $\phi$의 값은 0,0.5,1,2,3.5,5,6,7 이다.
+
+            <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202469894-ee9e2cfc-52d5-4670-9731-972d0ef70ba9.png" width=400></p>
+
+        - Efficient-Net B7($\phi=7$)의 경우 k=2 일때 $\alpha=1.2^7=3.58, \beta=1.1^7=1.95,\gamma=1.15^7=2.83$ 이고, 이 값들은 7제곱 값임에도 $\phi$를 0부터 7까지 키워나가며 단계적인 성능 향상을 보여주기에 알맞은 scaling value라고 생각하지 않았을까?
+        - 만약 k=3 이었다면?
+            - $\sqrt[3]{3}=1.44, 1.44^7=12.83$ 이 된다. **모델의 깊이를 10배 이상 키우며 성능 향상을 도모하는 것은 효율적인 모델 크기를 찾고자하는 논문의 의도**에 맞지 않는다.
+         
+        - 결국 k=1보다 커야하는 상황에서 논문의 objective와 알맞는 유일한 값은 **2** 뿐이었던 것!!
+
+    
+3. AuGNet에 대하여
+    - SE모델과의 연관성
+
+4. Convolution 구현 살펴보기
+    - Atrous Convolution
+
+        ``` python
+        import torch.nn as nn
+
+        class DilConv(nn.Module):
+            def __init__(self, C_in, C_out, kernel_size, stride, padding,dilation, affine=True):
+                self.op = nn.Sequential(
+                    nn.Conv2d(C_in, C_in, kernel_size=kernel_size, stride=stride, padding=padding,dilation=dilation, groups=C_in, bias=False),
+                    nn.Conv2d(C_in, C_out , kernel_size=1, padding=0, bias=False),
+                    nn.BatchNorm2d(C_out, affine=affine),
+                    nn.ReLU(inplace=False)   
+                )
+
+            def forward(self, x):
+                return self.op(x)
+        ```
+            
+        - Atrous Convolution을 어떻게 구현하는 건지 궁금해서 code를 찾아봤는데, 알고보니 nn.Conv2d의 parameter에 이를 구현할 수 있게 해놓았더라..
+        - Parameter중 dilation 이란 argument(default=1)을 조절하면 atrous convolution(=dilated convolution)을 사용할 수 있다.
+        
+    - Deformable Convolution
+        - 예상했듯이 offset을 학습시킨다는 개념을 코드로 구현하기는 쉽지 않아보인다.[[LINK]](https://github.com/oeway/pytorch-deform-conv/blob/d61d3aa4da20880c524193a50f6e9b44b921a938/torch_deform_conv/layers.py#L10)
+        - 찾아보니 Pytorch 공식 문서에 deform_conv2d로 API화 되어있다.[[LINK]](https://pytorch.org/vision/main/generated/torchvision.ops.deform_conv2d.html)
+
+### About Mission
+
+- Mission2 : FasterRCNN
+    > RoI pooling을 통해 얻은 roi결과들과 gt bbox간 IoU를 구할때 , 왜 gt bbox를 positive sample로 간주할까?
+    - FasterRCNN의 code 중 강의에서 배운 내용과 다르게 구현되어 있는 부분이 있다.
+        ``` python
+        def __call__(self, roi, bbox, label,
+                    loc_normalize_mean=(0., 0., 0., 0.),
+                    loc_normalize_std=(0.1, 0.1, 0.2, 0.2)):
+            n_bbox, _ = bbox.shape
+
+            roi = np.concatenate((roi, bbox), axis=0) ## 의문점이 드는 부분
+
+            pos_roi_per_image = np.round(self.n_sample * self.pos_ratio) # positive image 갯수 = 32
+            iou = bbox_iou(roi, bbox) # RoI와 bounding box IoU
+            gt_assignment = iou.argmax(axis=1)
+            max_iou = iou.max(axis=1)
+        ```
+        - 위 코드는 ProposalTargetCreator 의 call 함수로, **roi pooling(2000개) 후 각각의 roi에 대해 image의 ground truth bounding box와 ioU를 계산** 한다. (ex : roi 2000개, gt_bbox 10개의 경우 20000번의 ioU 연산을 하는 것)
+        - 이후 각 roi 에 대해 가장 ioU가 높은 gt_bbox가 무엇인지를 판단한다.(가장 연관성이 높은 gt)
+        - 해당 ioU 값이 pos_threshold보다 크면, 이 roi를 positive sample로 여기며 top N개의 positive sample을 선별 한다.
+    - 이 과정에서, roi 와 gt_bbox(code에선 bbox로 표기)를 concat 후 gt_bbox와의 ioU를 계산하면 concat 한 gt_bbox에 대해선 당연히 ioU 값 1을 얻는다.(자기 자신과의 ioU이므로)
+    - ioU는 1을 초과할 수 없으므로 이 bbox들은 대해선 pos_threshold 기준을 넘는 것은 물론이고, Top N개의 postive sample에 **무조건** 포함 되어 이후 학습(loss)에 관여하게 된다.
+    - **즉, ground truth를 마치 roi 처럼 여기고 이후 ground truth와 비교하는 학습에 포함시키는 행위이다. 왜 이렇게 학습하는 것일까?**
+        - 내가 미처 확인하지 못한 사안이 있을지도 몰라서 official code[[LINK]](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/issues/143)를 확인 해보았다.
+            - Issue([[About creator_tool.py#143]](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/issues/143),[[About concatenate roi and bbox#56]](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/issues/56))에 이에 대한 질문들이 올라와 있었는데 명쾌한 정답을 찾을 수 없었다.
+        - 또 다른 official code[[LINK]](https://github.com/endernewton/tf-faster-rcnn/blob/master/lib/layer_utils/proposal_target_layer.py)엔 해당 부분이 다음과 같이 구현되어 있다.
+            ```python
+            # Include ground-truth boxes in the set of candidate rois
+            if cfg.TRAIN.USE_GT:
+                zeros = np.zeros((gt_boxes.shape[0], 1), dtype=gt_boxes.dtype)
+                all_rois = np.vstack(
+                (all_rois, np.hstack((zeros, gt_boxes[:, :-1])))
+                )
+                # not sure if it a wise appending, but anyway i am not using it
+                all_scores = np.vstack((all_scores, zeros))
+            ```
+            - 코드의 주석에도 알 수 있듯이, 이렇게 하는 것에 대한 이유는 없어보였고 config파일로 부터 USE_GT라는 변수를 받아 gt의 concat여부를 정할 수 있도록 짜여져있다.
+        - 조교의 의견, 다른 캠퍼의 의견 그리고 내 생각을 종합해 봤을때
+            - 이와 같은 trick은 기본적으로 detection task가 classification보다 hard하다는 것을 전제로 이해해야 한다. **즉, classification에서 gt label을 prediction으로 쓰는 것은 nonsense이지만 detection은 bbox를 예측해야 하기 떄문에 그럴 수 있다는 것이다.**
+            - Image내에 다수의 물체가 존재하고, 그 물체의 size가 작다고 가정할때 학습 초기에 gt와 IoU가 높은 Top N개의 RoI를 신뢰할 수 있을까? 또 매 iteration 마다 예측 되는 Top N개의 roi들은 학습에 사용할 만큼 정확하다고 할 수 있는가?
+            - 우리의 코드에서는 n_sample = 128, pos_ratio = 0.25이기 때문에 Top 32개의 positive sample을 뽑는다. 이 때, 이미지 내 객체의 개수가 3개라고 한다면 약 10%의 positive roi가 gt가 된다.
+            - 학습 초기단계의 detection box의 uncertainty에 의한 불안정성을 고려할 때, 이 positive roi들은 **안정적인 학습을 위한 최소한의 안전장치** 역할을 해줄 것이다. **학습이 많이 진행된 시점에선 큰 의미가 없을지 몰라도, 학습 초기 단계에 positive sample의 일부로써 올바른 방향으로의 학습을 지속적으로 유도하고자 함이 concat의 목적**이라고 생각된다. 
+    
 
 ### 멘토링
 
