@@ -437,19 +437,19 @@
 
     - EfficientNet의 objective는 너무 당연해 보인다. network의 성능을 maximize하는 depth, width, resolution을 구하는 것.. 너무 당연해 보이지 않는가? **그러나, 그걸 찾아나가는 방식을 당연시해서는 안된다고 생각한다.**
 
-    - 저자는 왜 **exponential equation**을 토대로 $\alpha$, $\beta$,$\gamma$ 을 찾으려고 했을까?
+    - 저자는 왜 **exponential equation**을 토대로 $\alpha, \beta,\gamma$ 을 찾으려고 했을까?
         - 맨 처음 들었던 의문점이다. $d=\phi\alpha, w= \phi\beta, r = \phi\gamma$ 와 이 linear equation으로 search해도 되지 않았을까?
 
         <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202458891-ccc6c587-2698-4f00-905d-84e4302dbd1e.png" width = 400></p>
 
 
-        - 오른쪽은 논문에서 제시한 compound scaling method의 수식이고, 왼쪽은 $\phi$ 값에 따른 최적의 $\alpha$, $\beta$,$\gamma$ 값을 찾을 때 linear한 식과 exponential한 식의 차이를 나타낸 것이다.
+        - 오른쪽은 논문에서 제시한 compound scaling method의 수식이고, 왼쪽은 $\phi$ 값에 따른 최적의 $\alpha, \beta, \gamma$ 값을 찾을 때 linear한 식과 exponential한 식의 차이를 나타낸 것이다.
         - 지수함수의 경우 같은 $\phi$에 대해, 변수의 값이 linear하게 증가할때 수식의 값은 빠르게 증폭된다.
         - 이러한 경향성이 **Layer가 쌓임에 따라 Deep Neural Network의 representation power가 증가하는 경향성**과 비슷하다는 가정을 한것이 아닐까? 또한, non-linearity가 보장되는 nerual network의 capacity가 linear하게 증가할 것이라는 가정은 non-sense처럼 보인다. 따라서 neural network의 표현력이 증가하는 경향성을 가장 간단하게 잘 표현할 수 있는 수단이 exponential이었을 것이라고 추측해본다.
 
     - Constraint $\alpha \times \beta^2 \times \gamma^2 = 2$ 는 어떻게 정했을까?
         - 위 그림에서 알 수 있듯이 저자는 small grid search를 통해 $\alpha,\beta,\gamma$ 값을 정했다고 한다.
-        - $\alpha \times \beta^2 \times \gamma = k $ 라고 가정해보자.
+        - $\alpha \times \beta^2 \times \gamma=k$ 라고 가정해보자.
         - 각 parameter $\alpha,\beta,\gamma$ 를 동일한 초기값에서 시작하여 searching한다고 할 때 그 값은 $\sqrt[3]{k}$ 일 것이다.
         - k=2 일 경우 $\sqrt[3]{2}$의 값은 1.25992, 논문에서 사용한 $\alpha=1.2, \beta=1.1,\gamma=1.15$ 와 비교해볼때 small grid search로 찾기에 적합한 초기값임을 알 수 있다.
         - 논문에서 $\phi$는 모델의 scaling된 정도를 model 이름의 B뒤에 붙여 naming하기 위해 사용된다. 예를 들어, EfficientNet-B0에서 $\phi=0$이다.
