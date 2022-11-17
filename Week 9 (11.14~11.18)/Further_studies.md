@@ -13,13 +13,13 @@
     - (8강) Advanced Object Detection 2
     - (9강) Ready for Competition
 
-- Further questions 
+- Further questions : 다음 의문점들을 풀고 정리한다.
 
-    - 초기 YOLO는 왜 2개의 boundingbox를 예측했을까?
-    - EfficientNet의 objective 수식과 parameter들의 타당성에 대하여
-    - AuGNet에 대하여
+    1. **초기 YOLO는 왜 2개의 boundingbox를 예측했을까?**
+    2. **EfficientNet의 objective 수식과 parameter들의 타당성에 대하여**
+    3. **AuGNet에 대하여**
         - SE모델과의 연관성
-    - Convolution 구현 살펴보기
+    4. **Convolution 구현 살펴보기**
         - Atrous Convolution
         - Deformable Convolution
 
@@ -404,8 +404,9 @@
             <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202416797-a65a6af3-63eb-4573-99f5-6b4627f1d07d.png" width=400></p>
 
             - 데이터의 분포가 imbalance한 상황에서 fold마다 유사한 데이터 분포를 갖도록 하는 방법
-    
-### Further Questions
+---
+
+## Further Questions
 
 1. 초기 YOLO는 왜 2개의 boundingbox를 예측했을까?
     - YOLOv1은 하나의 셀에 대해 1x30 의 vector를 predict한다. 30은 2개의 bounding box에 대한 정보(x,y,w,h,c) + 20개의 class에 대한 score이다. (7x7 grid에 대해 최종 예측 7x7x30)
@@ -492,7 +493,8 @@
         - 예상했듯이 offset을 학습시킨다는 개념을 코드로 구현하기는 쉽지 않아보인다.[[LINK]](https://github.com/oeway/pytorch-deform-conv/blob/d61d3aa4da20880c524193a50f6e9b44b921a938/torch_deform_conv/layers.py#L10)
         - 찾아보니 Pytorch 공식 문서에 deform_conv2d로 API화 되어있다.[[LINK]](https://pytorch.org/vision/main/generated/torchvision.ops.deform_conv2d.html)
 
-### About Mission
+---
+## About Mission
 
 - Mission2 : FasterRCNN
     > RoI pooling을 통해 얻은 roi결과들과 gt bbox간 IoU를 구할때 , 왜 gt bbox를 positive sample로 간주할까?
