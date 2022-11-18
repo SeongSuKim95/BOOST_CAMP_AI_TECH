@@ -17,9 +17,9 @@
 
     1. **초기 YOLO는 왜 2개의 boundingbox를 예측했을까?**
     2. **EfficientNet의 objective 수식과 parameter들의 타당성에 대하여**
-    3. **AuGNet에 대하여**
-        - Adaptive Spatial Fusion
-        - Soft RoI selection
+    3. **AuGFPN에 대하여**
+        - Adaptive Spatial Fusion은 꼭 필요 할까?
+        - Soft RoI selection은 어떤 의미를 갖는가?
     4. **Convolution 구현 살펴보기**
         - Atrous Convolution
         - Deformable Convolution
@@ -618,8 +618,8 @@
             - 학습 초기단계의 detection box의 uncertainty에 의한 불안정성을 고려할 때, 이 positive roi들은 **안정적인 학습을 위한 최소한의 안전장치** 역할을 해줄 것이다. **학습이 많이 진행된 시점에선 큰 의미가 없을지 몰라도, 학습 초기 단계에 positive sample의 일부로써 올바른 방향으로의 학습을 지속적으로 유도하고자 함이 concat의 목적**이라고 생각된다. 
     
 ---
-## 멘토링
+## 멘토링 - 정리 중
 
-- 멘토님의 질문 : Pretrained weight를 쓰는 것이 항상 좋을까요?
+- 멘토님의 질문 : Pretrained weight를 사용하는 것이 항상 올바른 선택일까요?
     - ImageNet 도 자체적인 bias를 갖고 있다.
     - 우리가 봤을때 시각적인 점,선,면에 대한 개념이 유지되는 데이터셋이라면 ImageNet pretrained를 쓸 수 있다. 
