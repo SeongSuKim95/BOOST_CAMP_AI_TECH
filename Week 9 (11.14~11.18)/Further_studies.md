@@ -18,7 +18,8 @@
     1. **초기 YOLO는 왜 2개의 boundingbox를 예측했을까?**
     2. **EfficientNet의 objective 수식과 parameter들의 타당성에 대하여**
     3. **AuGNet에 대하여**
-        - SE모델과의 연관성
+        - Adaptive Spatial Fusion
+        - Soft RoI selection
     4. **Convolution 구현 살펴보기**
         - Atrous Convolution
         - Deformable Convolution
@@ -29,7 +30,7 @@
 - Mentoring
     - Pretrained weight를 사용하는 것이 항상 올바른 선택일까요?
 
-
+---
 ## Course
 
 ### (1강) Object Detection Overview
@@ -408,90 +409,168 @@
 
 ## Further Questions
 
-1. 초기 YOLO는 왜 2개의 boundingbox를 예측했을까?
-    - YOLOv1은 하나의 셀에 대해 1x30 의 vector를 predict한다. 30은 2개의 bounding box에 대한 정보(x,y,w,h,c) + 20개의 class에 대한 score이다. (7x7 grid에 대해 최종 예측 7x7x30)
-    - **그렇다면 왜 1개도 3개도 아닌 2개의 bbox를 예측했어야 했는지가 궁금해졌다. 어차피 여러개도 아닌 2개를 예측할 것이었다면, 나라면 1개를 예측하는 것부터 시작했을 것이다. 저자는 왜 이런 선택을 했을까?**
-        - 이에 대한 이유 또는 ablation study가 논문[[YOLOv1]](https://arxiv.org/abs/1506.02640)에 나와 있을줄 알았는데, 다음과 같은 문장말고는 근거를 찾을 수 없었다.
+### 1. 초기 YOLO는 왜 2개의 boundingbox를 예측했을까?
+- YOLOv1은 하나의 셀에 대해 1x30 의 vector를 predict한다. 30은 2개의 bounding box에 대한 정보(x,y,w,h,c) + 20개의 class에 대한 score이다. (7x7 grid에 대해 최종 예측 7x7x30)
+- **그렇다면 왜 1개도 3개도 아닌 2개의 bbox를 예측했어야 했는지가 궁금해졌다. 어차피 여러개도 아닌 2개를 예측할 것이었다면, 나라면 1개를 예측하는 것부터 시작했을 것이다. 저자는 왜 이런 선택을 했을까?**
+    - 이에 대한 이유 또는 ablation study가 논문[[YOLOv1]](https://arxiv.org/abs/1506.02640)에 나와 있을줄 알았는데, 다음과 같은 문장말고는 근거를 찾을 수 없었다.
 
-            > For evaluating YOLO on PASCAL VOC, we use S = 7,
-            B = 2. PASCAL VOC has 20 labelled classes so C = 20.
-            Our final prediction is a 7 × 7 × 30 tensor.
-        - 구글링을 하다가 이와 관련된 3개의 글을 찾았다.
-            1.  [[YOLO정리글]](https://curt-park.github.io/2017-03-26/yolo/)
-                - 개념 정리도 정리지만, 댓글의 질문들을 보며 YOLO에 대한 이해를 높일 수 있다.
-                
-                    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202445416-e831ea65-9a23-47a7-91e2-d7cc05863c75.png" width=400></p>
-            2. [[Inflearn 질문: YOLO는 왜 2개의 bbox를 예측하나요]](https://www.inflearn.com/questions/551824)
+        > For evaluating YOLO on PASCAL VOC, we use S = 7,
+        B = 2. PASCAL VOC has 20 labelled classes so C = 20.
+        Our final prediction is a 7 × 7 × 30 tensor.
+    - 구글링을 하다가 이와 관련된 3개의 글을 찾았다.
+        1.  [[YOLO정리글]](https://curt-park.github.io/2017-03-26/yolo/)
+            - 개념 정리도 정리지만, 댓글의 질문들을 보며 YOLO에 대한 이해를 높일 수 있다.
             
-            3. [[Towards data science: YOLO]](https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006)
-                - 이 글에서 어느정도는 궁금증을 해소 할 수 있었다.
+                <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202445416-e831ea65-9a23-47a7-91e2-d7cc05863c75.png" width=600></p>
+        2. [[Inflearn 질문: YOLO는 왜 2개의 bbox를 예측하나요]](https://www.inflearn.com/questions/551824)
+        
+        3. [[Towards data science: YOLO]](https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006)
+            - 이 글에서 어느정도는 궁금증을 해소 할 수 있었다.
 
-                    > YOLO predicts **multiple bounding boxes per grid cell.** At training time we only want one bounding box predictor to be responsible for each object. We assign one predictor to be “responsible” for predicting an object based on which prediction has the highest current IOU with the ground truth. **This leads to specialization between the bounding box predictors.** Each predictor gets better at predicting certain sizes, aspect ratios, or classes of object, improving overall recall.
-                    
-                    > **YOLO imposes strong spatial constraints on bounding box predictions since each grid cell only predicts two boxes and can only have one class. This spatial constraint limits the number of nearby objects that our model can predict.** Our model struggles with small objects that appear in groups, such as flocks of birds.
+                > YOLO predicts **multiple bounding boxes per grid cell.** At training time we only want one bounding box predictor to be responsible for each object. We assign one predictor to be “responsible” for predicting an object based on which prediction has the highest current IOU with the ground truth. **This leads to specialization between the bounding box predictors.** Each predictor gets better at predicting certain sizes, aspect ratios, or classes of object, improving overall recall.
+                
+                > **YOLO imposes strong spatial constraints on bounding box predictions since each grid cell only predicts two boxes and can only have one class. This spatial constraint limits the number of nearby objects that our model can predict.** Our model struggles with small objects that appear in groups, such as flocks of birds.
 
-                - 정리하자면, 기본적으로 YOLO는 한 cell내에 존재하는 다중 객체에 대한 detection을 수행할 수 있게 하기 위해 cell마다 1개의 bbox가 아닌 복수 개(2개)의 bbox를 예측한다. 학습 되는 과정 속에서 두개의 bbox중 하나만을 원하기 때문에 gt와 IoU가 가장 높은 bbox를 선택하게 되고 이것이 prediction 방식을 더 **구체화(specialize)** 시킨다는 것이다. **만약 bbox를 1개만 예측했다면, 단순히 비교군이 없기 때문에 IoU가 적당히 높은 수준에서 학습이 멈추고 size, aspect ratio에 대한 세밀한 detection을 하지 못하는 것이 아닐까?** 1 stage detector이기 때문에 이런 설정이 필요한 것으로 보인다.
-                - 그러나, 2개만을 예측하는 것(더 많이 예측하지 않는 것)을 YOLO의 limitation으로 보기도 한다. 그 이유는, cell 주변에 2개 이상의 작은 object가 있을 때 대응하지 못하기 때문이다.
+            - 정리하자면, 기본적으로 YOLO는 한 cell내에 존재하는 다중 객체에 대한 detection을 수행할 수 있게 하기 위해 cell마다 1개의 bbox가 아닌 복수 개(2개)의 bbox를 예측한다. 학습 되는 과정 속에서 두개의 bbox중 하나만을 원하기 때문에 gt와 IoU가 가장 높은 bbox를 선택하게 되고 이것이 prediction 방식을 더 **구체화(specialize)** 시킨다는 것이다. **만약 bbox를 1개만 예측했다면, 단순히 비교군이 없기 때문에 IoU가 적당히 높은 수준에서 학습이 멈추고 size, aspect ratio에 대한 세밀한 detection을 하지 못하는 것이 아닐까?** 1 stage detector이기 때문에 이런 설정이 필요한 것으로 보인다.
+            - 그러나, 2개만을 예측하는 것(더 많이 예측하지 않는 것)을 YOLO의 limitation으로 보기도 한다. 그 이유는, cell 주변에 2개 이상의 작은 object가 있을 때 대응하지 못하기 때문이다.
 
-2. EfficientNet의 objective 수식의 타당성에 대하여
+### 2. EfficientNet의 objective 수식의 타당성에 대하여
 
-    - EfficientNet의 objective는 너무 당연해 보인다. network의 성능을 maximize하는 depth, width, resolution을 구하는 것.. 너무 당연해 보이지 않는가? **그러나, 그걸 찾아나가는 방식을 당연시해서는 안된다고 생각한다.**
+- EfficientNet의 objective는 너무 당연해 보인다. network의 성능을 maximize하는 depth, width, resolution을 구하는 것.. 너무 당연해 보이지 않는가? **그러나, 그걸 찾아나가는 방식을 당연시해서는 안된다고 생각한다.**
 
-    - 저자는 왜 **exponential equation**을 토대로 $\alpha, \beta,\gamma$ 을 찾으려고 했을까?
-        - 맨 처음 들었던 의문점이다. $d=\phi\alpha, w= \phi\beta, r = \phi\gamma$ 와 이 linear equation으로 search해도 되지 않았을까?
+- 저자는 왜 **exponential equation**을 토대로 $\alpha, \beta,\gamma$ 을 찾으려고 했을까?
+    - 맨 처음 들었던 의문점이다. $d=\phi\alpha, w= \phi\beta, r = \phi\gamma$ 와 이 linear equation으로 search해도 되지 않았을까?
 
-        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202458891-ccc6c587-2698-4f00-905d-84e4302dbd1e.png" width = 400></p>
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202458891-ccc6c587-2698-4f00-905d-84e4302dbd1e.png" width = 400></p>
 
 
-        - 오른쪽은 논문에서 제시한 compound scaling method의 수식이고, 왼쪽은 $\phi$ 값에 따른 최적의 $\alpha, \beta, \gamma$ 값을 찾을 때 linear한 식과 exponential한 식의 차이를 나타낸 것이다.
-        - 지수함수의 경우 같은 $\phi$에 대해, 변수의 값이 linear하게 증가할때 수식의 값은 빠르게 증폭된다.
-        - 이러한 경향성이 **Layer가 쌓임에 따라 Deep Neural Network의 representation power가 증가하는 경향성**과 비슷하다는 가정을 한것이 아닐까? 또한, non-linearity가 보장되는 nerual network의 capacity가 linear하게 증가할 것이라는 가정은 non-sense처럼 보인다. 따라서 neural network의 표현력이 증가하는 경향성을 가장 간단하게 잘 표현할 수 있는 수단이 exponential이었을 것이라고 추측해본다.
+    - 오른쪽은 논문에서 제시한 compound scaling method의 수식이고, 왼쪽은 $\phi$ 값에 따른 최적의 $\alpha, \beta, \gamma$ 값을 찾을 때 linear한 식과 exponential한 식의 차이를 나타낸 것이다.
+    - 지수함수의 경우 같은 $\phi$에 대해, 변수의 값이 linear하게 증가할때 수식의 값은 빠르게 증폭된다.
+    - 이러한 경향성이 **Layer가 쌓임에 따라 Deep Neural Network의 representation power가 증가하는 경향성**과 비슷하다는 가정을 한것이 아닐까? 또한, non-linearity가 보장되는 nerual network의 capacity가 linear하게 증가할 것이라는 가정은 non-sense처럼 보인다. 따라서 neural network의 표현력이 증가하는 경향성을 가장 간단하게 잘 표현할 수 있는 수단이 exponential이었을 것이라고 추측해본다.
 
-    - Constraint $\alpha \times \beta^2 \times \gamma^2 = 2$ 는 어떻게 정했을까?
-        - 위 그림에서 알 수 있듯이 저자는 small grid search를 통해 $\alpha,\beta,\gamma$ 값을 정했다고 한다.
-        - $\alpha \times \beta^2 \times \gamma=k$ 라고 가정해보자.
-        - 각 parameter $\alpha,\beta,\gamma$ 를 동일한 초기값에서 시작하여 searching한다고 할 때 그 값은 $\sqrt[3]{k}$ 일 것이다.
-        - k=2 일 경우 $\sqrt[3]{2}$의 값은 1.25992, 논문에서 사용한 $\alpha=1.2, \beta=1.1,\gamma=1.15$ 와 비교해볼때 small grid search로 찾기에 적합한 초기값임을 알 수 있다.
-        - 논문에서 $\phi$는 모델의 scaling된 정도를 model 이름의 B뒤에 붙여 naming하기 위해 사용된다. 예를 들어, EfficientNet-B0에서 $\phi=0$이다.
-        - B0~7까지 $\phi$의 값은 0,0.5,1,2,3.5,5,6,7 이다.
+- Constraint $\alpha \times \beta^2 \times \gamma^2 = 2$ 는 어떻게 정했을까?
+    - 위 그림에서 알 수 있듯이 저자는 small grid search를 통해 $\alpha,\beta,\gamma$ 값을 정했다고 한다.
+    - $\alpha \times \beta^2 \times \gamma=k$ 라고 가정해보자.
+    - 각 parameter $\alpha,\beta,\gamma$ 를 동일한 초기값에서 시작하여 searching한다고 할 때 그 값은 $\sqrt[3]{k}$ 일 것이다.
+    - k=2 일 경우 $\sqrt[3]{2}$의 값은 1.25992, 논문에서 사용한 $\alpha=1.2, \beta=1.1,\gamma=1.15$ 와 비교해볼때 small grid search로 찾기에 적합한 초기값임을 알 수 있다.
+    - 논문에서 $\phi$는 모델의 scaling된 정도를 model 이름의 B뒤에 붙여 naming하기 위해 사용된다. 예를 들어, EfficientNet-B0에서 $\phi=0$이다.
+    - B0~7까지 $\phi$의 값은 0,0.5,1,2,3.5,5,6,7 이다.
 
-            <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202469894-ee9e2cfc-52d5-4670-9731-972d0ef70ba9.png" width=400></p>
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202469894-ee9e2cfc-52d5-4670-9731-972d0ef70ba9.png" width=400></p>
 
-        - Efficient-Net B7($\phi=7$)의 경우 k=2 일때 $\alpha=1.2^7=3.58, \beta=1.1^7=1.95,\gamma=1.15^7=2.83$ 이고, 이 값들은 7제곱 값임에도 $\phi$를 0부터 7까지 키워나가며 단계적인 성능 향상을 보여주기에 알맞은 scaling value라고 생각하지 않았을까?
-        - 만약 k=3 이었다면?
-            - $\sqrt[3]{3}=1.44, 1.44^7=12.83$ 이 된다. **모델의 깊이를 10배 이상 키우며 성능 향상을 도모하는 것은 효율적인 모델 크기를 찾고자하는 논문의 의도**에 맞지 않는다.
-         
-        - 결국 k=1보다 커야하는 상황에서 논문의 objective와 알맞는 유일한 값은 **2** 뿐이었던 것!!
+    - Efficient-Net B7($\phi=7$)의 경우 k=2 일때 $\alpha=1.2^7=3.58, \beta=1.1^7=1.95,\gamma=1.15^7=2.83$ 이고, 이 값들은 7제곱 값임에도 $\phi$를 0부터 7까지 키워나가며 단계적인 성능 향상을 보여주기에 알맞은 scaling value라고 생각하지 않았을까?
+    - 만약 k=3 이었다면?
+        - $\sqrt[3]{3}=1.44, 1.44^7=12.83$ 이 된다. **모델의 깊이를 10배 이상 키우며 성능 향상을 도모하는 것은 효율적인 모델 크기를 찾고자하는 논문의 의도**에 맞지 않는다.
+        
+    - 결국 k=1보다 커야하는 상황에서 논문의 objective와 알맞는 유일한 값은 **2** 뿐이었던 것!!
 
     
-3. AuGNet에 대하여
-    - SE모델과의 연관성
+### 3. [AugFPN](https://arxiv.org/abs/1912.05384)에 대하여
 
-4. Convolution 구현 살펴보기
-    - Atrous Convolution
+- Adaptive Spatial Fusion
 
-        ``` python
-        import torch.nn as nn
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202600558-da613400-355a-46bb-b949-64399d18f36f.png" width = 400></p>
 
-        class DilConv(nn.Module):
-            def __init__(self, C_in, C_out, kernel_size, stride, padding,dilation, affine=True):
-                self.op = nn.Sequential(
-                    nn.Conv2d(C_in, C_in, kernel_size=kernel_size, stride=stride, padding=padding,dilation=dilation, groups=C_in, bias=False),
-                    nn.Conv2d(C_in, C_out , kernel_size=1, padding=0, bias=False),
-                    nn.BatchNorm2d(C_out, affine=affine),
-                    nn.ReLU(inplace=False)   
-                )
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202602115-a007a1c6-d776-4449-ae48-cc82491fbbda.png" width = 400></p>
 
-            def forward(self, x):
-                return self.op(x)
-        ```
-            
-        - Atrous Convolution을 어떻게 구현하는 건지 궁금해서 code를 찾아봤는데, 알고보니 nn.Conv2d의 parameter에 이를 구현할 수 있게 해놓았더라..
-        - Parameter중 dilation 이란 argument(default=1)을 조절하면 atrous convolution(=dilated convolution)을 사용할 수 있다.
+    - AugFPN은 P5가 다른 level의 feature map과 달리 상위 feature map으로 부터의 정보 전달을 받지 못하여 발생하는 정보 손실을 지적하여, M6 feature map을 만드는 **Residual Feature Augmentation(이하 RFA)** 을 제안
+    - 논문에 제시된 RFA의 구조를 살펴보면 다음과 같은 순서로 C5로 부터 M6를 생성한다.
+        1. Ratio-invariant adaptive pooling(RAP)를 통해 $ h \times w $ size를 가진 서로 C5를 다른 3개의 작은 feature map으로 down scaling($\alpha = 0.1,0.2,0.3$)
+        2. 이후 scaling 된 feature map들을 1x1 convolution에 통과시켜 각각 채널 크기를 256으로 조정(figure엔 표기 생략)
+        3. 3개의 feature map을 bilinear interpolation을 통해 원래의 크기인 $ h \times w$ 로 다시 upscaling하고, **Adaptive Spatial Fusion(이하 ASF)**을 수행
+        4. ASF는 feature map을 weighted aggregation하여 최종 feature map을 생성하기 위한 방법으로, ASF 그림의 왼쪽 route를 통해 각 feature map을 사용하여 가중치를 생성하고 이를 원래의 feature map에 channel-wise multiplication 후 summation
+        5. 가중치를 생성하는 과정
+            - 4개의 feature map을 물리적으로 concat하여 하나의 feature vector로 만듦
+            - 이후, 이를 1x1 convolution에 통과시켜 feature level간 fusion을 학습
+            - Fusion된 feature map을 3x3 convolution에 통과시켜 spatial한 정보를 추출
+            - 추출된 값이 weight로 사용될 수 있도록 sigmoid에 통과시켜 0~1의 값을 가지도록 조정
+    - 위 과정에서 알 수 있듯이, C5를 ratio-invariant하게 줄였다가 다시 원래의 크기로 upsampling한 후 합치는 것을 알 수 있다. 이때 ASF가 꼭 필요할까? 3개의 feature map을 단순히 합치지 않은 이유가 무엇일까?
+        - 논문에서 다음과 같은 근거를 찾을 수 있었다.
+            >  Considering the **aliasing effect caused by interpolation**, we design a module named Adaptive Spatial Fusion (ASF) to adaptively combine these context features instead of simple summation. 
+
+            - 즉, Upsampling에서의 interpolation을 통해 발생할 수 있는 aliasing effect를 피하기 위해 ASF를 도입한 것
+            - 그렇다면 **aliasing effect**란 무엇인가?
+
+                <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202606165-0eb6971e-12f2-4582-a512-05ed08328b31.png"></p>
+
+                - Image processing에서 upsampling시 interpolation에 의해 왼쪽 그림과 같은 **moire pattern**이 발생하게 된다.
+                - Moire pattern에 대한 설명[[Stack Exchange: What is moire?]](https://photo.stackexchange.com/questions/11909/what-is-moir%C3%A9-how-can-we-avoid-it)
+
+                    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202606945-df8c42c8-2615-44e1-a803-ee04f5e15b32.png"></p>
+
+        - RFA의 목적을 다시 생각해보면, feature map C5을 다양한 scale의 관점에서 해석한 M6를 만들기 위해 pooling & upsamping을 했어야했고 이에 수반되는 문제점(aliasing effect)을 해결하기 위해 ASF를 도입한 것으로 해석된다.
+    - 위의 분석을 토대로 생각해볼때, Adaptive spatial fusion은 **network가 feature map들의 중요도를 adaptive하게 결정하여 spatial(3x3 conv) filter를 통해 각 feature map을 fusion한다**는 의미를 가진다.
+    - Ablation studies for RFA
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202609580-e295b523-7333-417d-b921-074dc4ba1841.png" width = 400></p>
         
-    - Deformable Convolution
-        - 예상했듯이 offset을 학습시킨다는 개념을 코드로 구현하기는 쉽지 않아보인다.[[LINK]](https://github.com/oeway/pytorch-deform-conv/blob/d61d3aa4da20880c524193a50f6e9b44b921a938/torch_deform_conv/layers.py#L10)
-        - 찾아보니 Pytorch 공식 문서에 deform_conv2d로 API화 되어있다.[[LINK]](https://pytorch.org/vision/main/generated/torchvision.ops.deform_conv2d.html)
+        - 논문에선 ASF와 RA-AP 사용 여부와 이때 사용하는 feature map의 개수, alpha값 변화에 따른 성능 변화를 연구하였다.
+        - Baseline과 비교했을때, 예상과 다르게 feature map을 단순 summation을 하여도 GMP을 제외한 pooling방법에서 AP가 상승된다. **이는, summation에 의해 밝생하는 aliasing effect를 고려하더라도 upsampling이전에 채널수를 맞춰주는 1x1 conv에서 parameter들이 관여하는 영향력이 꽤 크기 때문이 아닐까?**
+        - RA-AP는 단순히 pooling 방식임에도 불구하고, 동일한 조건하에 다른 pooling 방식보다 꽤 큰 성능 향상을 가져온다. Network가 multi-scale feature를 잘 추출할 수 있게 하는 일종의 augmentation처럼 동작하는 듯 하다.
+        - 4,5번째 행에서 확인할 수 있듯이, ASF 사용시 한개의 feature map만으로 3개의 feature map을 단순 summation 한 것과 비슷한 성능을 얻을 수 있다. 
+        - ASF에서 사용하는 feature map의 수가 증가할수록 성능이 향상되는 것으로, feature map간 weighted summation을 고려하여 설계된 ASF의 타당성이 입증된다.
+        - **특히, feature map 4개(0.1,0.2,0.3,0.4)를 사용할 경우 3개(0.1,0.2,0.3)을 사용할 때보다 $AP_{l}$이 0.5% 상승하는 것을 알 수 있다. 이는 large object에 대해 다양한 scale의 feature map으로 부터 spatial fusion을 하는 것이 중요하다는 사실을 입증한다.**
+- Soft RoI Selection
+    - Soft RoI selection(SRS)는 기존 모델들의 문제점을 해결하기 위해 등장했다.
+        - FPN과 같이 하나의 feature map에서 RoI를 계산하는 경우 sub-optimal
+        - PANet은 모든 level의 feature map를 사용하나, max 값을 가지는 level의 feature만을 사용하기 때문에 정보 손실이 발생
+    - **그렇다면 SRS는 어떻게 feature map간 fusion을 진행하는가?**
+
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202616342-6c31a8f3-1766-49bb-8a3b-9f9b8ef5c2dd.png"></p>
+
+        - Steps             
+            - 먼저 4개 level feature map $ C \times H \times W$ 을 GMP 한 후 concat 하여 $4C \times 1 \times 1$ 벡터를 생성
+            - $4C \times C/4 \times 1 \times 1$(#param=$C^2$)에 통과시켜  $C/4 \times 1 \times 1$ 벡터로 만들어 각 level의 channel 정보를 fusion
+            - 다시 $C/4 \times 4C \times 1 \times 1$(#param=$C^2$)에 통과시켜 원래 channel수로 expand 하고, 4개로 나누어 각각을 feature map의 weight로 사용
+            - feature map과 weight vector를 Channel-wise multiplication한 후 weighted summation 수행
+        - Weight를 만들어내는 과정은 ASF모델 내부와 매우 유사한데, **한가지 다른점은 3x3 conv filter 대신 1x1 conv filter만을 사용**했다는 것이다. 논문에선 이 둘을 구분하여 ASF를 spatial fusion으로, SRS를 adaptive channel fusion으로 명명하고 있다.
+    - Squeeze and Excitation block과의 유사성[[Squeeze-and-Excitation Networks]](https://arxiv.org/abs/1709.01507)
+        - SRS를 보자마자 SE-Net이 떠올랐다.[[참고자료]](https://jayhey.github.io/deep%20learning/2018/07/18/SENet/)
+        
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202618341-095bb7b1-fc25-4e0b-b3f6-98b3be1e69bb.png"></p>
+
+        - Squeeze : Global information Embedding
+            - 각 채널들의 중요한 정보만을 추출
+            - GAP를 사용하여 global spatial information을 한개의 channel을 대표하는 descripter로 압축(SRS에서는 GMP 사용)
+        - Excitation : Adaptive Recalibration
+            - 압축한 중요한 정보들을 재조정(Recalibrate)
+            - 채널 간 의존성(channel-wise dependencies)를 계산
+        - 채널간 의존성을 계산한다는 측면에서 유사한 구조를 갖는 SRS은 **모델이 각 level feature map들을 살펴보며 중요도를 판단** 할 수 있게 하는 역할을 할 것이다.
+    
+    - Ablation studies for SRS
+        
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202619880-d7696b87-4edf-4e9c-8405-84cbfd57fe92.png"></p>
+
+        - SRS사용할 경우 fusion type에 상관 없이 항상 성능이 향상 된다. (fusion type의 sum,max는 PANet에서 extra fc layer를 사용하지 않고 RoI feature를 사용한 것이라고 한다.)
+        - **모든 정보를 그대로 사용하는 summation보다 ACF,ASF의 성능이 좋은 것을 볼 때 모델이 feature map간 가중치를 스스로 결정하는 것이 학습에 도움이 되는 것을 알 수 있다.**
+        - 추가로, ASF(3x3 conv)를 사용한 경우에 ACF보다 AP가 높은 것을 알 수 있다. **특히, $AP_{l}$에 대해 0.7%의 꽤 큰 성능차이가 나는 것을 확인할 수 있는데, 이는 large object들에 대해선 spatial feature를 추출하는 것이 중요하기 때문으로 보인다. ASF가 의도대로 동작하고 있음을 보여주는 증거가 아닐까?**
+
+
+### 4. Convolution 구현 살펴보기
+- Atrous Convolution
+
+    ``` python
+    import torch.nn as nn
+
+    class DilConv(nn.Module):
+        def __init__(self, C_in, C_out, kernel_size, stride, padding,dilation, affine=True):
+            self.op = nn.Sequential(
+                nn.Conv2d(C_in, C_in, kernel_size=kernel_size, stride=stride, padding=padding,dilation=dilation, groups=C_in, bias=False),
+                nn.Conv2d(C_in, C_out , kernel_size=1, padding=0, bias=False),
+                nn.BatchNorm2d(C_out, affine=affine),
+                nn.ReLU(inplace=False)   
+            )
+
+        def forward(self, x):
+            return self.op(x)
+    ```
+        
+    - Atrous Convolution을 어떻게 구현하는 건지 궁금해서 code를 찾아봤는데, 알고보니 nn.Conv2d의 parameter에 이를 구현할 수 있게 해놓았더라..
+    - Parameter중 dilation 이란 argument(default=1)을 조절하면 atrous convolution(=dilated convolution)을 사용할 수 있다.
+        
+- Deformable Convolution
+    - 예상했듯이 offset을 학습시킨다는 개념을 코드로 구현하기는 쉽지 않아보인다.[[LINK]](https://github.com/oeway/pytorch-deform-conv/blob/d61d3aa4da20880c524193a50f6e9b44b921a938/torch_deform_conv/layers.py#L10)
+    - 찾아보니 Pytorch 공식 문서에 deform_conv2d로 API화 되어있다.[[LINK]](https://pytorch.org/vision/main/generated/torchvision.ops.deform_conv2d.html)
 
 ---
 ## About Mission
@@ -538,8 +617,8 @@
             - 우리의 코드에서는 n_sample = 128, pos_ratio = 0.25이기 때문에 Top 32개의 positive sample을 뽑는다. 이 때, 이미지 내 객체의 개수가 3개라고 한다면 약 10%의 positive roi가 gt가 된다.
             - 학습 초기단계의 detection box의 uncertainty에 의한 불안정성을 고려할 때, 이 positive roi들은 **안정적인 학습을 위한 최소한의 안전장치** 역할을 해줄 것이다. **학습이 많이 진행된 시점에선 큰 의미가 없을지 몰라도, 학습 초기 단계에 positive sample의 일부로써 올바른 방향으로의 학습을 지속적으로 유도하고자 함이 concat의 목적**이라고 생각된다. 
     
-
-### 멘토링
+---
+## 멘토링
 
 - 멘토님의 질문 : Pretrained weight를 쓰는 것이 항상 좋을까요?
     - ImageNet 도 자체적인 bias를 갖고 있다.
