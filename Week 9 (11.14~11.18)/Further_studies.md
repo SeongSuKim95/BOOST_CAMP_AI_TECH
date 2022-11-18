@@ -441,7 +441,7 @@
 - 저자는 왜 **exponential equation**을 토대로 $\alpha, \beta,\gamma$ 을 찾으려고 했을까?
     - 맨 처음 들었던 의문점이다. $d=\phi\alpha, w= \phi\beta, r = \phi\gamma$ 와 이 linear equation으로 search해도 되지 않았을까?
 
-    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202458891-ccc6c587-2698-4f00-905d-84e4302dbd1e.png" width = 400></p>
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202458891-ccc6c587-2698-4f00-905d-84e4302dbd1e.png" width = 600></p>
 
 
     - 오른쪽은 논문에서 제시한 compound scaling method의 수식이고, 왼쪽은 $\phi$ 값에 따른 최적의 $\alpha, \beta, \gamma$ 값을 찾을 때 linear한 식과 exponential한 식의 차이를 나타낸 것이다.
@@ -456,7 +456,7 @@
     - 논문에서 $\phi$는 모델의 scaling된 정도를 model 이름의 B뒤에 붙여 naming하기 위해 사용된다. 예를 들어, EfficientNet-B0에서 $\phi=0$이다.
     - B0~7까지 $\phi$의 값은 0,0.5,1,2,3.5,5,6,7 이다.
 
-        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202469894-ee9e2cfc-52d5-4670-9731-972d0ef70ba9.png" width=400></p>
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202469894-ee9e2cfc-52d5-4670-9731-972d0ef70ba9.png" width=600></p>
 
     - Efficient-Net B7($\phi=7$)의 경우 k=2 일때 $\alpha=1.2^7=3.58, \beta=1.1^7=1.95,\gamma=1.15^7=2.83$ 이고, 이 값들은 7제곱 값임에도 $\phi$를 0부터 7까지 키워나가며 단계적인 성능 향상을 보여주기에 알맞은 scaling value라고 생각하지 않았을까?
     - 만약 k=3 이었다면?
@@ -475,9 +475,9 @@
 
     - AugFPN은 P5가 다른 level의 feature map과 달리 상위 feature map으로 부터의 정보 전달을 받지 못하여 발생하는 정보 손실을 지적하여, M6 feature map을 만드는 **Residual Feature Augmentation(이하 RFA)** 을 제안
     - 논문에 제시된 RFA의 구조를 살펴보면 다음과 같은 순서로 C5로 부터 M6를 생성한다.
-        1. Ratio-invariant adaptive pooling(RAP)를 통해 $ h \times w $ size를 가진 서로 C5를 다른 3개의 작은 feature map으로 down scaling($\alpha = 0.1,0.2,0.3$)
+        1. Ratio-invariant adaptive pooling(RAP)를 통해 $h \times w$ size를 가진 서로 C5를 다른 3개의 작은 feature map으로 down scaling(alpha = 0.1,0.2,0.3)
         2. 이후 scaling 된 feature map들을 1x1 convolution에 통과시켜 각각 채널 크기를 256으로 조정(figure엔 표기 생략)
-        3. 3개의 feature map을 bilinear interpolation을 통해 원래의 크기인 $ h \times w$ 로 다시 upscaling하고, **Adaptive Spatial Fusion(이하 ASF)**을 수행
+        3. 3개의 feature map을 bilinear interpolation을 통해 원래의 크기인 $ h \times w$ 로 다시 upscaling하고, **Adaptive Spatial Fusion(이하 ASF)** 을 수행
         4. ASF는 feature map을 weighted aggregation하여 최종 feature map을 생성하기 위한 방법으로, ASF 그림의 왼쪽 route를 통해 각 feature map을 사용하여 가중치를 생성하고 이를 원래의 feature map에 channel-wise multiplication 후 summation
         5. 가중치를 생성하는 과정
             - 4개의 feature map을 물리적으로 concat하여 하나의 feature vector로 만듦
@@ -502,7 +502,7 @@
     - 위의 분석을 토대로 생각해볼때, Adaptive spatial fusion은 **network가 feature map들의 중요도를 adaptive하게 결정하여 spatial(3x3 conv) filter를 통해 각 feature map을 fusion한다**는 의미를 가진다.
     - Ablation studies for RFA
 
-        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202609580-e295b523-7333-417d-b921-074dc4ba1841.png" width = 400></p>
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/202609580-e295b523-7333-417d-b921-074dc4ba1841.png" width = 600></p>
         
         - 논문에선 ASF와 RA-AP 사용 여부와 이때 사용하는 feature map의 개수, alpha값 변화에 따른 성능 변화를 연구하였다.
         - Baseline과 비교했을때, 예상과 다르게 feature map을 단순 summation을 하여도 GMP을 제외한 pooling방법에서 AP가 상승된다. **이는, summation에 의해 밝생하는 aliasing effect를 고려하더라도 upsampling이전에 채널수를 맞춰주는 1x1 conv에서 parameter들이 관여하는 영향력이 꽤 크기 때문이 아닐까?**
@@ -520,8 +520,8 @@
 
         - Steps             
             - 먼저 4개 level feature map $ C \times H \times W$ 을 GMP 한 후 concat 하여 $4C \times 1 \times 1$ 벡터를 생성
-            - $4C \times C/4 \times 1 \times 1$(#param=$C^2$)에 통과시켜  $C/4 \times 1 \times 1$ 벡터로 만들어 각 level의 channel 정보를 fusion
-            - 다시 $C/4 \times 4C \times 1 \times 1$(#param=$C^2$)에 통과시켜 원래 channel수로 expand 하고, 4개로 나누어 각각을 feature map의 weight로 사용
+            - $4C \times C/4 \times 1 \times 1$(#param=C^2)에 통과시켜  $C/4 \times 1 \times 1$ 벡터로 만들어 각 level의 channel 정보를 fusion
+            - 다시 $C/4 \times 4C \times 1 \times 1$(#param=C^2)에 통과시켜 원래 channel수로 expand 하고, 4개로 나누어 각각을 feature map의 weight로 사용
             - feature map과 weight vector를 Channel-wise multiplication한 후 weighted summation 수행
         - Weight를 만들어내는 과정은 ASF모델 내부와 매우 유사한데, **한가지 다른점은 3x3 conv filter 대신 1x1 conv filter만을 사용**했다는 것이다. 논문에선 이 둘을 구분하여 ASF를 spatial fusion으로, SRS를 adaptive channel fusion으로 명명하고 있다.
     - Squeeze and Excitation block과의 유사성[[Squeeze-and-Excitation Networks]](https://arxiv.org/abs/1709.01507)
