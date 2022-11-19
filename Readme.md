@@ -1,5 +1,5 @@
 
-<p align="center"><img src="https://user-images.githubusercontent.com/62092317/202859164-0c79b700-697f-4f94-9ee4-8aeeb6ee0f2f.gif" width= 300></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/62092317/202859164-0c79b700-697f-4f94-9ee4-8aeeb6ee0f2f.gif" width= 360></p>
 
 ***<p align="center">Nobody in life gets exactly what they thought they were going to get.</p>***
   
