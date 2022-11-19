@@ -1,4 +1,16 @@
 
+<p align="center"><img src="https://user-images.githubusercontent.com/62092317/202859164-0c79b700-697f-4f94-9ee4-8aeeb6ee0f2f.gif" width= 300></p>
+
+***<p align="center">Nobody in life gets exactly what they thought they were going to get.</p>***
+  
+> <p align="center">세상 사람 그 누구도 인생이 계획대로만 되지는 않습니다.</p>
+
+***<p align="center">But if you work really hard and you're kind, amazing things will happen.</p>***
+
+> <p align="center">그러나 하루하루 성실하고 친절하게 살아간다면, 놀라운 일들이 펼쳐질 것입니다.</p>
+
+> <p align="center">NBC 투나잇쇼에서 마지막 인사말 - Conan Christopher O'Brien</p>
+  
 
 # Purpose of the repository 🌟
 

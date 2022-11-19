@@ -623,3 +623,5 @@
 - 멘토님의 질문 : Pretrained weight를 사용하는 것이 항상 올바른 선택일까요?
     - ImageNet 도 자체적인 bias를 갖고 있다.
     - 우리가 봤을때 시각적인 점,선,면에 대한 개념이 유지되는 데이터셋이라면 ImageNet pretrained를 쓸 수 있다. 
+
+
