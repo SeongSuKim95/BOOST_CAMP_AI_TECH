@@ -33,6 +33,8 @@
 - Mentoring
     - About Dropout
 
+- 정규식
+    - 특정 두 문자 사이의 문자열 추출
 ---
 
 ## Competition
@@ -97,8 +99,16 @@
 ### 2. Confidence threshold/ IoU threshold and mAP
 
 - IoU threshold, mAP의 오류
-- 실험결과와 함께 첨부하기
 
+- 실험결과와 함께 첨부하기
+    - Confidence threshold, IoU threshold에 따른 LB score 변화 
+        |conf|IoU|LB score|
+        |------|---|---|
+        |0.001|0.4|60.93|
+        |0.001|0.5|61.48|
+        |0.001|0.6|61.41|
+        |0.05|0.5|60.03|
+    - 
 ### 3. YOLOv7 
 
 #### 오피스 아워
@@ -162,10 +172,39 @@
         - copy_paste, paste_in은 detection task가 아닌 segmentation task에서 사용되는 copy & paste augmentation의 params
     - Hyperparameter Tuning은 train.py에서 parsing하는 argument 중 evolve를 활용하면 된다.
 - 참고자료
-    - [[YOLO Training]](https://towardsdatascience.com/training-yolo-select-anchor-boxes-like-this-3226cb8d7f0b)
+    - [[YOLO Auto-anchoring]](https://towardsdatascience.com/training-yolo-select-anchor-boxes-like-this-3226cb8d7f0b)
     - [[YOLOv1v6비교]](https://leedakyeong.tistory.com/entry/Object-Detection-YOLO-v1v6-%EB%B9%84%EA%B5%902)
     - [[YOLO evolve]](https://github.com/ultralytics/yolov5/issues/607)
+    - [[YOLO auto-anchoring2]](https://leedakyeong.tistory.com/entry/Object-Detection-YOLO-Optimal-Anchor-Box-YOLO-v5-YOLO-v6-autoanchor)
+    - [[YOLO-loss]](https://leedakyeong.tistory.com/entry/Object-Detection-YOLO-v5-v6-Loss)
+    - ```python
+        class ComputeLossAuxOTA:
+        # Compute losses
+        def __init__(self, model, autobalance=False):
+            super(ComputeLossAuxOTA, self).__init__()
+            device = next(model.parameters()).device  # get model device
+            h = model.hyp  # hyperparameters
 
+            # Define criteria
+            BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))
+            BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['obj_pw']], device=device))
+
+            # Class label smoothing https://arxiv.org/pdf/1902.04103.pdf eqn 3
+            self.cp, self.cn = smooth_BCE(eps=h.get('label_smoothing', 0.0))  # positive, negative BCE targets
+
+            # Focal loss
+            g = h['fl_gamma']  # focal loss gamma
+            if g > 0:
+                BCEcls, BCEobj = FocalLoss(BCEcls, g), FocalLoss(BCEobj, g)
+
+            det = model.module.model[-1] if is_parallel(model) else model.model[-1]  # Detect() module
+            self.balance = {3: [4.0, 1.0, 0.4]}.get(det.nl, [4.0, 1.0, 0.25, 0.06, .02])  # P3-P7
+            self.ssi = list(det.stride).index(16) if autobalance else 0  # stride 16 index
+            self.BCEcls, self.BCEobj, self.gr, self.hyp, self.autobalance = BCEcls, BCEobj, model.gr, h, autobalance
+            for k in 'na', 'nc', 'nl', 'anchors', 'stride':
+                setattr(self, k, getattr(det, k))
+      ```
+    - [[About Loss gain]](https://github.com/ultralytics/yolov5/issues/5371)
 ### 4. K-fold ansemble을 하는것이 전체 dataset을 학습하는 것보다 성능이 높을 수 있나? [[About Bagging]](https://sungkee-book.tistory.com/9)
 
 - Bagging이란?
@@ -309,3 +348,18 @@
 - Dropout 과 DropConnect의 차이 [[LINK]](https://stats.stackexchange.com/questions/201569/what-is-the-difference-between-dropout-and-drop-connect)
 
 - torch.nn의 layer를 생성할 떄 Dropout을 적용할 줄만 알았지, 구체적인 구현에 대한 원리와 이유를 모르고 있었다. Deep learning 공부에선 detail이 중요함을 다시금 깨달았다.. 
+
+---
+
+## 정규식
+
+- 특정 두 문자 사이의 문자열 추출하기
+    ``` python
+    import re
+
+    string = 'dsafasdf"helloworld"dsfafads'
+    regex = re.compile('{}(.*){}'.format(re.escape('"'), re.escape('"')))
+    text = regex.findall(string)
+    print(text[0])
+
+    ```
