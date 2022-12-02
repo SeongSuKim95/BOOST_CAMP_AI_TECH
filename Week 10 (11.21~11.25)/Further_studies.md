@@ -95,7 +95,40 @@
 ## Further Questions: 다음 의문점들을 풀고 정리한다.
 
 ### 1. Bbox loss : IoU, GIoU, DIoU, CIoU의 차이점은?
-- TODO
+- IoU
+    - Intersection over Union으로 OD 분야에서 prediction bbox와 ground truth가 일치하는 정도를 0과 1사이의 값으로 나타낸 것
+    - **IoU가 왜 필요할까?**
+        
+        <p align="center"><img src="https://user-images.githubusercontent.com/62092317/204812955-00dda64a-5e61-4f35-bb34-05c18b79068d.png"></p>
+        <p align="centeR"><img src="https://user-images.githubusercontent.com/62092317/204816626-43caec74-f49b-4aa6-bfb4-8e79ac0edfc4.png"></p>
+        
+        - Bounding box 의 좌하단, 우상단 지점을 기준으로 두 bbox를 비교할 때 좌표간 L2,L1 norm이 같더라도 box가 겹치는 영역의 크기는 균일하지 않다.(두 그림은 각각 L2,L1 norm distance가 같아도 bbox간 위치가 상이할 수 있음을 보여준다.)
+        - 이 때문에 Object Detection에서 단순히 box의 좌표 차이를 통해 loss를 구하는 것보다 IoU를 loss에 활용하는 것이 regression loss에 더 적합하다.
+        - 그러나, **IoU는 수식 상 두 bbox간 겹치는 영역이 0인 경우들에 대해 어느 정도의 오차를 가지고 bbox가 떨어져 있는지를 구분할 수 없기 때문에 gradient vanishing 문제가 발생**한다.
+- GIoU(Generalized Intersection over Union: A Metric and A Loss for Bounding Box Regression[[LINK]](https://arxiv.org/abs/1902.09630))
+    
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/204826809-d9183adf-11c6-4b4b-bd48-26b2e5799a6e.png"></p>
+
+    - 두 bbox를 비교할 때 둘을 포함하는 가장 큰 bbox를 기준으로 측정
+    - C box는 A,B를 포함하는 가장 작은 이며, C \ (AUB)는 C 영역에서 A와B의 합집합 영역을 뺀 것을 의미한다.
+    - GIoU는 IoU와 다르게 -1~1의 값을 가지며, 두 bbox가 겹치는 영역 없이 딱 붙어 있을 때 0이다.
+    - **이를 통해 gt와 겹치지 않는 bbox에 대한 gradient vanishing 문제는 개선 했지만 수렴 속도가 느리고, 겹치는 영역이 없는 경우 bbox가 gt로 수렴하기 위한 방향성(horizontal,vertical)을 가진 정보를 포함하지 않는다는 문제점이 존재**
+    
+- DIoU(Distance-IoU Loss: Faster and Better Learning for Bounding Box Regression)[[LINK]](https://arxiv.org/pdf/1911.08287.pdf)
+
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/204833078-23ba9523-364f-4b38-a7da-64447d6e5446.png"></p>
+
+    - Bbox의 수렴성을 개선하기 위해 IoU와 함께 중심 좌표를 regression한다. 
+    - IoU, GIoU가 두 박스의 교집합을 넓히는 것에만 집중하고 bbox가 수렴해야 하는 방향(x,y)은 고려하지 않는 반면 DIoU는 중심 좌표를 regression하기 때문에 gt의 중심점을 향하도록 bbox가 수렴해 나간다.
+    - DIoU에선 두 bbox의 중심좌표간 Euclidean distance를 최소화 하는 방향으로 학습이 이루어진다.
+
+- CIoU(Complete-IoU)
+    
+    <p align="center"><img src="https://user-images.githubusercontent.com/62092317/204853397-10e9614f-efe0-40c4-b262-e5171fde1930.png"></p>
+
+    - Bbox에 대한 좋은 regression loss는 **overlap area, central point distance, aspect ratio**를 고려하는 것임을 고려하여 loss를 구성한다.
+    - v는 두 bbox간 aspect ratio의 유사성을 측정하는 항으로, 마지막 항을 통해 prediction이 ground truth의 aspect ratio에 수렴하도록 학습
+
 ### 2. Confidence threshold/ IoU threshold and mAP
 
 - IoU threshold, mAP의 오류
@@ -108,7 +141,7 @@
         |0.001|0.5|61.48|
         |0.001|0.6|61.41|
         |0.05|0.5|60.03|
-    - 
+        - 모델 inference시, LB score에 두가지 
 ### 3. YOLOv7 
 
 #### 오피스 아워
@@ -205,6 +238,7 @@
                 setattr(self, k, getattr(det, k))
       ```
     - [[About Loss gain]](https://github.com/ultralytics/yolov5/issues/5371)
+    - [[Object Positive weight]](https://github.com/ultralytics/yolov3/issues/375)
 ### 4. K-fold ansemble을 하는것이 전체 dataset을 학습하는 것보다 성능이 높을 수 있나? [[About Bagging]](https://sungkee-book.tistory.com/9)
 
 - Bagging이란?
