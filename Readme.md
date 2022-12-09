@@ -42,11 +42,18 @@
 
 4. **Week5 - CV (10.17 ~ 10.21)** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%205%20(10.17~10.21))
 
-5. **Week6 - CV Competition 1th week** [[LINK]]()
+5. **Week6 - CV Competition 1th week** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%206%20(10.24~10.28))
 
-6. **Week7 - CV Competition 2nd week** [[LINK]]()
+6. **Week7 - CV Competition 2nd week** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%207%20(10.31~11.4))
 
-7. **Week8 - AI service** [[LINK]]()
+7. **Week8 - AI service** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%208%20(11.7~11.11))
+
+8. **Week9 - Object Detection Competition 1th week** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%209%20(11.14~11.18))
+
+9. **Week10 - Object Detection Competition 2nd week** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%2010%20(11.21~11.25))
+
+11. **Week12 - Annotation** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/tree/master/Week%2012%20(12.5~12.9))
+
 # Collections 🍎
 
 - **Documents** [[LINK]](https://github.com/SeongSuKim95/BOOST_CAMP_AI_TECH/blob/master/Collections/Documents.md)
