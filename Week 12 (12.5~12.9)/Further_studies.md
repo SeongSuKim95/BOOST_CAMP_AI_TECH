@@ -1,4 +1,4 @@
-# Week 9 : Object Detection
+# Week 12 : Data Annotation
 
 ## Contents 
 
@@ -23,7 +23,6 @@
 ## Course
 
 ### (1,2강) 데이터 제작의 중요성 
-
 
 - Lifecycle of an AI Project
 
@@ -65,15 +64,9 @@
         - 효율적인 작업을 위해선 작업자의 충분한 도메인 지식에 대한 경험치를 통한 예외 case에 대한 인지가 중요
         - 테슬라의 경우 자율 주행에서의 예외 경우 221가지를 정의하여 세심히 관리한다.
 ---
-
-## Further Questions
-
----
-## About Mission
-
-    
----
 ## 멘토링 
 
 
 
+---
+## 프로젝트 제안서 작성
