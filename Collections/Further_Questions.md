@@ -118,6 +118,4 @@
     1. ZeroCap에서 이미지에 적합한 caption을 생성하기위해, CLIP 정보를 어떻게 활용했나요?
     2. Transformer의 어떤 특징이 Unified Model 구성을 용이하게했나요?
 
-# Week 6
-
 

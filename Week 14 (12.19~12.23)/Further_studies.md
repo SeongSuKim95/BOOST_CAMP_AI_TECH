@@ -66,7 +66,7 @@
 ---
 ## 멘토링 
 
-- Conv, Dropout, Batchnorm, activation, pooling의 올바른 순서는??
+
 
 ---
 ## 프로젝트 제안서 작성
